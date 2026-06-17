@@ -1,6 +1,6 @@
 ---
 name: book2skill
-description: Distill a book into a coherent set of executable skills. Use when the user asks to "拆书" / "蒸馏一本书" / "把 XX 书做成 skill" / "turn a book into skills" — i.e. wants a book's frameworks, principles, and methodologies extracted into atomic, reusable Claude skills that an agent can invoke in real-world situations. Supports both single-book mode and multi-book mode (融合打通多本书形成决策知识网络). NOT for simple summarization, book reviews, or role-playing as the author (that is nuwa-skill's job).
+description: Distill a book into a coherent set of executable skills. Use when the user asks to "拆书" / "蒸馏一本书" / "把 XX 书做成 skill" / "把书变成技能" / "拆解这本书" / "提取书里的方法论" / "turn a book into skills" / "distill book into skills" / "extract skills from book" / "book to skill" — i.e. wants a book's frameworks, principles, and methodologies extracted into atomic, reusable Claude skills that an agent can invoke in real-world situations. Supports both single-book mode and multi-book mode (融合打通多本书形成决策知识网络). NOT for simple summarization, book reviews, or role-playing as the author (that is nuwa-skill's job).
 ---
 
 # book2skill — 把一本书或一组书蒸馏成可执行 skills 的元 skill
