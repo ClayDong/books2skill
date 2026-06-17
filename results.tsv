@@ -4,3 +4,7 @@ timestamp	commit	skill	old_score	new_score	status	dimension	note	eval_mode
 2026-06-17T14:40	f85baa3	book2skill	69.1	70.5	keep	检查点	阶段1.5/2/4加检查点	dry_run
 2026-06-17T14:45	47a8a99	book2skill	70.5	71.3	keep	Frontmatter	补充触发词	dry_run
 2026-06-17T14:50	0d32f3c	book2skill	71.3	74.3	keep	工作流	多书步骤具体化	dry_run
+2026-06-17T15:30	baseline	book2skill	74.3	75.8	baseline	实测基线	3个test-prompts干跑验证	full_test
+2026-06-17T15:35	bc0ab88	book2skill	75.8	77.2	keep	实测表现	添加输入验证门控	full_test
+2026-06-17T15:40	49dc013	book2skill	77.2	78.7	keep	指令具体性	sub-agent Task调用模板	full_test
+2026-06-17T15:45	d1d7a62	book2skill	78.7	80.2	keep	整体架构	TL;DR决策树	full_test

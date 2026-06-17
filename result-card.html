@@ -74,7 +74,7 @@
     stroke-width: 18;
     stroke-linecap: round;
     stroke-dasharray: 534;
-    stroke-dashoffset: 137;
+    stroke-dashoffset: 105;
     transform: rotate(-90deg);
     transform-origin: center;
     filter: drop-shadow(0 2px 8px rgba(232,89,12,0.3));
@@ -448,7 +448,7 @@
       </svg>
       <div class="ring-center">
         <div>
-          <span class="ring-score">74.3</span><span class="ring-max">/100</span>
+          <span class="ring-score">80.2</span><span class="ring-max">/100</span>
         </div>
         <div class="ring-label">质量总分</div>
       </div>
@@ -460,11 +460,11 @@
         <span class="hero-skill-name">book2skill</span>
       </div>
       <div class="hero-journey">
-        从 <strong>66.1</strong> 分进化到 <strong>74.3</strong> 分<br>
-        <span style="color:#999;font-size:14px;">cangjie-skill / book2skill</span>
+        从 <strong>66.1</strong> 分进化到 <strong>80.2</strong> 分<br>
+        <span style="color:#999;font-size:14px;">cangjie-skill / book2skill (full_test)</span>
       </div>
       <div class="delta-badge">
-        <span>+8.2</span>
+        <span>+14.1</span>
         <span class="delta-badge-label">分</span>
       </div>
     </div>
@@ -484,14 +484,14 @@
     </div>
     <div class="breakthrough-card secondary">
       <div class="breakthrough-label">第二突破</div>
-      <div class="breakthrough-dim">工作流清晰度</div>
+      <div class="breakthrough-dim">实测表现</div>
       <div class="breakthrough-score-row">
-        <span class="breakthrough-from">7</span>
+        <span class="breakthrough-from">6</span>
         <span class="breakthrough-arrow">&rarr;</span>
-        <span class="breakthrough-to">9</span>
+        <span class="breakthrough-to">8</span>
       </div>
-      <div class="breakthrough-pct">+29%</div>
-      <div class="breakthrough-story">多书模式步骤具体化，每步有明确输入输出</div>
+      <div class="breakthrough-pct">+33%</div>
+      <div class="breakthrough-story">添加输入验证门控，实测3个prompt全部正确路由</div>
     </div>
   </div>
 
@@ -530,13 +530,13 @@
         </div>
         <span class="dim-arrow up-mid">+2</span>
       </div>
-      <div class="dim-cell">
+      <div class="dim-cell warm">
         <div class="dim-name">指令精度</div>
         <div class="dim-score-row">
           <span class="dim-old-score">7</span>
-          <span class="dim-score">7</span>
+          <span class="dim-score">8</span>
         </div>
-        <span class="dim-arrow flat">0</span>
+        <span class="dim-arrow up-small">+1</span>
       </div>
       <div class="dim-cell">
         <div class="dim-name">资源整合</div>
@@ -546,21 +546,21 @@
         </div>
         <span class="dim-arrow flat">0</span>
       </div>
-      <div class="dim-cell">
+      <div class="dim-cell warm">
         <div class="dim-name">整体架构</div>
         <div class="dim-score-row">
           <span class="dim-old-score">7</span>
-          <span class="dim-score">7</span>
+          <span class="dim-score">8</span>
         </div>
-        <span class="dim-arrow flat">0</span>
+        <span class="dim-arrow up-small">+1</span>
       </div>
-      <div class="dim-cell">
+      <div class="dim-cell hot">
         <div class="dim-name">实测表现</div>
         <div class="dim-score-row">
           <span class="dim-old-score">6</span>
-          <span class="dim-score">6</span>
+          <span class="dim-score">8</span>
         </div>
-        <span class="dim-arrow flat">0</span>
+        <span class="dim-arrow up-big">+2</span>
       </div>
     </div>
   </div>
@@ -569,8 +569,8 @@
     <div class="summary-header">关键改进</div>
     <div class="summary-items">
       <div class="summary-item">补充异常处理fallback路径，边界条件从5提升到8</div>
-      <div class="summary-item">阶段1.5/2/4增加用户确认检查点，防止自主失控</div>
-      <div class="summary-item">多书模式步骤具体化，工作流清晰度从7提升到9</div>
+      <div class="summary-item">添加输入验证门控阶段，实测3个prompt全部正确路由</div>
+      <div class="summary-item">多书模式步骤具体化+TL;DR决策树，工作流清晰度从7提升到9</div>
     </div>
   </div>
 
