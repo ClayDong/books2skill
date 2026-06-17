@@ -142,18 +142,29 @@ library/                        # 多书协同层
 
 #### 阶段 1 — 6 个 sub-agent 并行提取
 
-**并行** spawn 6 个 Task sub-agents(使用 Agent 工具,一次调用中发起 6 个):
+**并行** spawn 6 个 Task sub-agents(使用 Agent 工具,在**单次响应中发起 6 个并行 Task 调用**,不要串行):
 
-| sub-agent | 读取的 prompt | 产出 |
+| sub-agent | 读取的 prompt | 产出文件 |
 |---|---|---|
-| 框架提取器 | `extractors/framework-extractor.md` | 决策框架 / 思维模型 |
-| 原则提取器 | `extractors/principle-extractor.md` | 原则 / 清单 / 规则 |
-| 案例提取器 | `extractors/case-extractor.md` | 作者在书中亲自使用过的实例 |
-| 反例提取器 | `extractors/counter-example-extractor.md` | 书中警告的失败模式 |
-| 术语提取器 | `extractors/glossary-extractor.md` | 关键概念词典 |
-| 决策提取器 ★ | `extractors/decision-extractor.md` | 决策场景 / 决策流程 / 决策陷阱 |
+| 框架提取器 | `extractors/framework-extractor.md` | `candidates/framework.md` (决策框架 / 思维模型) |
+| 原则提取器 | `extractors/principle-extractor.md` | `candidates/principle.md` (原则 / 清单 / 规则) |
+| 案例提取器 | `extractors/case-extractor.md` | `candidates/case.md` (作者在书中亲自使用过的实例) |
+| 反例提取器 | `extractors/counter-example-extractor.md` | `candidates/counter-example.md` (书中警告的失败模式) |
+| 术语提取器 | `extractors/glossary-extractor.md` | `candidates/glossary.md` (关键概念词典) |
+| 决策提取器 ★ | `extractors/decision-extractor.md` | `candidates/decision.md` (决策场景 / 决策流程 / 决策陷阱) |
 
-每个 sub-agent 共享 `BOOK_OVERVIEW.md` 和 `reading_notes.md`,独立提取、独立输出到 `books/<slug>/candidates/<type>.md`。
+**每个 sub-agent 的 Task 调用模板**:
+```
+Task(
+  description: "<type>提取器",
+  prompt: "读取 extractors/<type>-extractor.md 的指令。
+   共享上下文: BOOK_OVERVIEW.md + reading_notes.md (已生成)。
+   按指令提取,输出到 books/<slug>/candidates/<type>.md。
+   格式: 每个候选单元含 [来源章节] [原文引用≤150字] [提取内容] [适用场景]"
+)
+```
+
+每个 sub-agent 共享 `BOOK_OVERVIEW.md` 和 `reading_notes.md`,独立提取、独立输出。
 
 #### 阶段 1.5 — 三重验证筛选
 
