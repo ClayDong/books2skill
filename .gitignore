@@ -1,0 +1,31 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+
+# OCR 中间文件
+*.tmp
+*.partial
+
+# 输出文本(在外网,不在本仓库,但保险起见)
+*.txt
+!templates/*.txt
+!library/books/**/verified.txt
+
+# IDE
+.vscode/
+.idea/
+*.swp
+.DS_Store
+
+# 临时日志
+*.log
+!ocr_*.log
+
+# 临时备份
+*.bak
+*.backup
+*~
