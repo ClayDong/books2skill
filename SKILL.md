@@ -145,9 +145,13 @@ library/                        # 多书协同层
 
 通过的进入阶段 2。不通过的写入 `books/<slug>/rejected/` 并附原因。
 
+**检查点 ★**: 展示候选池汇总 (通过数/淘汰数/各类型分布),询问用户:"筛选结果合理吗?有没有想强制保留或淘汰的?" 得到确认再进入阶段 2。
+
 #### 阶段 2 — RIA++ 构造 skill
 
 对每个通过的单元,按 `templates/SKILL.md.template` 填充 R/I/A1/A2/E/B 六段。细则见 `methodology/04-stage2-ria-plus.md`。
+
+**检查点 ★**: 第一个 skill 构造完成后,展示给用户:"这个 skill 的 RIA++ 结构对吗?边界条件 B 段写得准吗?" 得到确认再批量构造剩余 skill。
 
 #### 阶段 3 — Zettelkasten 链接
 
@@ -156,6 +160,8 @@ library/                        # 多书协同层
 #### 阶段 4 — 压力测试 (darwin 兼容)
 
 按 `methodology/06-stage4-pressure-test.md` 设计测试 prompt,未过的回炉重做阶段 2。
+
+**检查点 ★**: 压力测试完成后,展示通过率和不通过原因,询问用户:"要不要回炉重做失败的 skill,还是直接淘汰?"
 
 ---
 
