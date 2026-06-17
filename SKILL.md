@@ -178,30 +178,35 @@ library/                        # 多书协同层
 #### 步骤 2 — 按优先级逐本执行单本流水线
 
 按 LIBRARY_OVERVIEW 的优先级排序,逐本执行阶段 0-4:
-1. 第 1 本 (最高优先级) 完整跑完阶段 0-4
-2. 第 2 本开始,extractor 读取 `library/GLOSSARY_UNIFIED.md` (如果已有) 做术语复用
-3. 每本完成后,增量更新 `library/GLOSSARY_UNIFIED.md` 和 `library/THEME_INDEX.md`
-4. 发现跨书冲突时,立即记录到 `library/CONFLICTS.md`
+1. 第 1 本 (最高优先级) 完整跑完阶段 0-4,产出 `books/<slug>/` 全套文件
+2. 第 2 本开始,extractor 读取 `library/GLOSSARY_UNIFIED.md` (如果已有) 做术语复用 — 具体操作: 在 extractor prompt 中追加"参考已有术语: <GLOSSARY_UNIFIED.md 内容>"
+3. 每本完成后,增量更新:
+   - `library/GLOSSARY_UNIFIED.md`: 追加本书新术语,标注 per_book_usage
+   - `library/THEME_INDEX.md`: 追加本书主题,建立跨书关联
+4. 发现跨书冲突时,立即记录到 `library/CONFLICTS.md` — 格式: `| 冲突点 | 书A立场 | 书B立场 | 适用条件 |`
+5. 每本完成后向用户汇报进度: "已完成 X/N,下一本: <书名>"
 
 **不要并行跑多本书的单本流水线** — 顺序执行,确保每本都能复用前面的产出。
 
 #### 步骤 3 — 多书协同层 (阶段 5)
 
 所有单本完成后,执行 `methodology/07-stage5-multi-book-library.md`:
-1. 完善 `LIBRARY_OVERVIEW.md` (覆盖矩阵、推荐顺序)
-2. 完善 `THEME_INDEX.md` (跨书主题聚合 + 跨书关系集中维护)
-3. 完善 `GLOSSARY_UNIFIED.md` (术语冲突解决)
-4. 完善 `CONFLICTS.md` (跨书冲突记录)
+1. 完善 `LIBRARY_OVERVIEW.md` — 补充覆盖矩阵 (书 × 主题交叉表) 和推荐阅读顺序
+2. 完善 `THEME_INDEX.md` — 按主题聚合,每个主题列出相关 skill 和跨书关系
+3. 完善 `GLOSSARY_UNIFIED.md` — 解决术语冲突 (同一概念不同表述),保留 per_book_usage 不抹平
+4. 完善 `CONFLICTS.md` — 每条冲突必须记录适用条件,不选边站
 5. **不回填单本 SKILL.md** — 跨书关系集中在 library/ 层维护,保持单本 SKILL.md 纯净
+
+**检查点 ★**: 展示多书协同层产出,询问用户:"跨书关系梳理对吗?有没有遗漏的冲突或主题?"
 
 #### 步骤 4 — 决策导向产出 (阶段 6) ★
 
 执行 `methodology/08-stage6-decision-index.md`:
-1. 收集决策场景 (从 decision-extractor 产出 + 用户实际需求)
-2. 构建 `DECISION_INDEX.md` (决策场景 → skill 组合反向索引)
-3. 生成 `DECISION_CARDS/` (一页纸决策卡片)
-4. 生成 `COMPARISON_MATRIX.md` (同主题方法论对比)
-5. **用户验证**: 拿 2-3 个真实决策场景让用户走一遍,看流程是否跑得通
+1. 收集决策场景 — 来源: decision-extractor 产出 + 用户实际需求 + THEME_INDEX 中的高频主题
+2. 构建 `DECISION_INDEX.md` — 按决策场景组织 (不按书、不按主题),每个场景列出 skill 调用顺序
+3. 生成 `DECISION_CARDS/` — 每个决策场景一页纸,含: 场景描述 / 调用 skill 列表 / 决策流程图 / 注意事项
+4. 生成 `COMPARISON_MATRIX.md` — 同主题不同书的方法论对比,含: 适用条件 / 优势 / 局限
+5. **用户验证**: 拿 2-3 个真实决策场景让用户走一遍,看流程是否跑得通 — 不通则回炉调整
 
 ## 质量红线 (违反则阻止输出)
 
