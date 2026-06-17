@@ -1,6 +1,6 @@
-# 藏经阁快速使用指南 (QUICK_START)
+# 藏经阁快速使用指南 v2.0 (QUICK_START)
 
-> 20 个 skill + 3 本书的快速上手
+> 34 个 skill + 5 本书的快速上手
 
 ---
 
@@ -13,7 +13,9 @@
 | 价值观 | 大师兄 | 做人/态度/意义 | 6 |
 | 哲学 | 周易 | 时机/阶段/进退 | 6 |
 | 操作 | 炒股的智慧 | 投资操作 | 8 |
-| **总** | **3 本书** | **决策全流程** | **20** |
+| 学科 | 曼昆经济学 | 经济决策/市场分析 | 7 |
+| 政策 | 共同富裕 | 政策设计/分配机制 | 7 |
+| **总** | **5 本书** | **决策全流程** | **34** |
 
 ---
 
@@ -25,18 +27,67 @@
 问: "我该不该买这只股票?"
 
 路径:
-1. 启动: skill-router
-2. 调用顺序:
-   - dashixiong-long-termism (长期视角?)
-   - dashixiong-cash-cow (现金奶牛?)
-   - dashixiong-cultural-investment (跨域类比)
-   - i-ching-time-position (时机?)
-   - stock-trend-judgment (趋势?)
-   - stock-entry-decision (入场点?)
-   - dashixiong-keep-one-bite (仓位?)
+1. dashixiong-cash-cow (现金奶牛?)
+2. stock-trend-judgment (趋势?)
+3. mankiw-supply-demand-elasticity (行业供求?)
+4. dashixiong-long-termism (长期视角)
+5. stock-entry-decision (入场点?)
+6. dashixiong-keep-one-bite (仓位?)
 ```
 
-### 场景 2: 止盈止损
+### 场景 2: 政策评估
+
+```
+问: "这个政策会有什么影响?"
+
+路径:
+1. mankiw-incentive-analysis (激励怎么变?)
+2. mankiw-externality-policy (有无外部性?)
+3. mankiw-welfare-market-structure (福利影响?)
+4. gyfz-three-distribution (分配影响?)
+5. gyfz-gradual-reform (改革节奏?)
+```
+
+### 场景 3: 企业战略
+
+```
+问: "企业该怎么转型?"
+
+路径:
+1. gyfz-corporate-transformation (五个方向)
+2. mankiw-comparative-advantage (比较优势?)
+3. mankiw-marginal-thinking (边际收益?)
+4. dashixiong-long-termism (长期视角)
+5. i-ching-life-cycle (企业阶段?)
+```
+
+### 场景 4: 个人决策
+
+```
+问: "我该选A还是B?"
+
+路径:
+1. mankiw-opportunity-cost (机会成本?)
+2. mankiw-marginal-thinking (边际分析?)
+3. dashixiong-long-termism (长期视角)
+4. i-ching-time-position (时机?)
+5. dashixiong-giving (意义?)
+```
+
+### 场景 5: 分配/公平问题
+
+```
+问: "这个分配方案合理吗?"
+
+路径:
+1. gyfz-olive-evaluation (橄榄型评估)
+2. gyfz-three-gaps-diagnosis (差别诊断)
+3. gyfz-three-distribution (三层协调)
+4. mankiw-welfare-market-structure (效率损失?)
+5. gyfz-cake-balance (发展分配平衡?)
+```
+
+### 场景 6: 止盈止损
 
 ```
 问: "我持有的股票涨了/跌了,怎么办?"
@@ -50,7 +101,7 @@
 6. stock-psychology-check (心态检查)
 ```
 
-### 场景 3: 仓位/杠杆
+### 场景 7: 仓位/杠杆
 
 ```
 问: "我应该买多少?该加杠杆吗?"
@@ -62,7 +113,7 @@
 4. i-ching-advance-retreat (进退)
 ```
 
-### 场景 4: 创业决策
+### 场景 8: 创业决策
 
 ```
 问: "我该不该创业?"
@@ -74,21 +125,10 @@
 4. dashixiong-cash-cow (好生意?)
 5. i-ching-life-cycle (阶段)
 6. i-ching-time-position (时机)
+7. mankiw-opportunity-cost (机会成本?)
 ```
 
-### 场景 5: 职业/换工作
-
-```
-问: "我该不该换工作?"
-
-路径:
-1. dashixiong-long-termism (10 年视角)
-2. i-ching-life-cycle (阶段)
-3. dashixiong-sweeper-monk (态度)
-4. dashixiong-giving (意义)
-```
-
-### 场景 6: 市场崩盘/危机
+### 场景 9: 危机应对
 
 ```
 问: "市场崩了,我该怎么办?"
@@ -97,11 +137,11 @@
 1. dashixiong-keep-one-bite (留一口)
 2. i-ching-crisis-transformation (危机转化)
 3. stock-psychology-check (心态)
-4. stock-bubble-participation (泡沫)
-5. i-ching-revolution-timing (变革时机)
+4. mankiw-incentive-analysis (激励变化?)
+5. gyfz-gradual-reform (渐进应对)
 ```
 
-### 场景 7: 人生迷茫
+### 场景 10: 人生迷茫
 
 ```
 问: "我该怎么活?"
@@ -113,48 +153,11 @@
 4. i-ching-life-cycle (阶段)
 ```
 
-### 场景 8: 子女教育
-
-```
-问: "孩子该怎么教?"
-
-路径:
-1. dashixiong-cultural-investment (皇室培养)
-2. dashixiong-long-termism (长期)
-3. dashixiong-sweeper-monk (态度)
-4. i-ching-life-cycle (阶段)
-```
-
-### 场景 9: 时机判断
-
-```
-问: "现在该不该入场/行动?"
-
-路径:
-1. i-ching-time-position (时位中正)
-2. i-ching-decision-omen (几微信号)
-3. i-ching-life-cycle (阶段)
-4. stock-trend-judgment (趋势)
-5. dashixiong-cultural-investment (跨域)
-```
-
-### 场景 10: 学习投资
-
-```
-问: "我刚开始学投资,该怎么开始?"
-
-路径:
-1. stock-learning-stage (学习阶段)
-2. dashixiong-sweeper-monk (扫地僧 - 慢就是快)
-3. dashixiong-long-termism (长期)
-4. stock-psychology-check (心态)
-```
-
 ---
 
-## 三、4 个核心 skill (入门必看)
+## 三、5 个核心 skill (入门必看)
 
-如果你时间有限,**先看这 4 个**:
+如果你时间有限,**先看这 5 个**:
 
 ### 1. dashixiong-keep-one-bite (留一口)
 - **为什么先看**: 风险控制是基础
@@ -171,14 +174,19 @@
 - **核心**: 时/位/中/正 四维自检
 - **应用**: 任何重大决策
 
-### 4. dashixiong-giving (付出)
-- **为什么先看**: 价值观是基础
-- **核心**: 人生 = 付出
-- **应用**: 任何人生/职业决策
+### 4. mankiw-opportunity-cost (机会成本)
+- **为什么先看**: 成本思维是基础
+- **核心**: 选A的真实成本是放弃什么
+- **应用**: 任何选择决策
+
+### 5. gyfz-cake-balance (蛋糕权衡)
+- **为什么先看**: 发展分配权衡是基础
+- **核心**: 做大蛋糕+分好蛋糕动态平衡
+- **应用**: 任何发展/分配决策
 
 ---
 
-## 四、20 个 skill 一览
+## 四、34 个 skill 一览
 
 ### 价值观 (大师兄) - 6 个
 
@@ -215,13 +223,37 @@
 | psychology-check | 心态检查 | 我心态正常? |
 | learning-stage | 学习阶段 | 我该学什么? |
 
+### 学科 (曼昆经济学) - 7 个
+
+| Skill | 一句话 | trigger |
+|---|---|---|
+| opportunity-cost | 选A的真实成本是放弃什么 | 放弃了什么? |
+| marginal-thinking | 多一单位值不值 | 要不要多做一点? |
+| incentive-analysis | 政策变化后人们会怎么反应 | 他们会怎么反应? |
+| comparative-advantage | 谁该做什么 | 谁该做什么? |
+| supply-demand-elasticity | 价格变化对市场影响多大 | 涨价会怎样? |
+| welfare-market-structure | 这个市场有效率吗 | 市场健康吗? |
+| externality-policy | 行为影响了第三方怎么办 | 影响了别人? |
+
+### 政策 (共同富裕) - 7 个
+
+| Skill | 一句话 | trigger |
+|---|---|---|
+| cake-balance | 发展与分配如何动态平衡 | 先发展还是先分配? |
+| three-gaps-diagnosis | 不平等的三大根源在哪 | 为什么不平等? |
+| three-distribution | 三层分配机制如何协调 | 怎么分配? |
+| gradual-reform | 改革节奏如何设计 | 改革该多快? |
+| human-capital-priority | 人力资本投资优先序 | 该投资什么? |
+| corporate-transformation | 企业如何参与共富 | 企业该怎么做? |
+| olive-evaluation | 分配结构是否健康 | 分配健康吗? |
+
 ---
 
 ## 五、调用方式
 
 ### 方式 1: 直接调用 skill-router
 - 当用户说"我该不该做X"时,自动调用 skill-router
-- skill-router 会按 4 层调用相关 skill
+- skill-router 会按 5 层调用相关 skill
 
 ### 方式 2: 直接调用具体 skill
 - 当用户问题明确指向某个 skill 时,直接调用
@@ -234,10 +266,10 @@
 
 ## 六、最重要的 5 条原则
 
-### 1. 4 层决策
+### 1. 5 层决策
 
 ```
-价值观 → 哲学 → 操作 → 学科
+价值观 → 哲学 → 操作 → 学科 → 政策
 ```
 
 ### 2. 长期视角
@@ -252,49 +284,23 @@
 - 永远不加杠杆
 - 永远有子弹
 
-### 4. 付出哲学
+### 4. 机会成本思维
 
-- 人生 = 付出
-- 不求回报
-- 长期复利
+- 选A的真实成本是放弃B
+- 不只看显性成本,看隐性成本
 
-### 5. 时位中正
+### 5. 动态平衡
 
-- 时: 时机
-- 位: 位置
-- 中: 不偏激
-- 正: 合规合理
-
----
-
-## 七、避免的 5 个错误
-
-### 1. 满仓 + 杠杆
-- 任何情况下都不要
-- 即使再看好
-
-### 2. 短期主义
-- 短期不重要
-- 不要被短期波动影响
-
-### 3. 亢龙有悔
-- 不要顶峰时张扬
-- 不要顶峰时听不进意见
-
-### 4. 不付出
-- 索取是痛苦的根源
-- 付出是快乐的根源
-
-### 5. 急功近利
-- 长期主义
-- 慢就是快
-- 扫地僧境界
+- 发展与分配动态平衡
+- 效率与公平阶段性调整
+- 不走极端
 
 ---
 
 ## 元数据
 
+- **版本**: v2.0
 - **创建日期**: 2026-06-17
-- **覆盖**: 3 本书 + 20 个 skill
+- **覆盖**: 5 本书 + 34 个 skill
 - **核心**: skill-router
-- **方法**: 4 层决策支持
+- **方法**: 5 层决策支持
