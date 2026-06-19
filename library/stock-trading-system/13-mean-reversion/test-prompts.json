@@ -1,0 +1,45 @@
+{
+  "skill": "13-mean-reversion",
+  "version": "0.1.0",
+  "source_book": "《通向财务自由之路》范·K·撒普、《股市趋势技术分析》罗伯特·D·爱德华兹",
+  "darwin_compatible": true,
+  "test_cases": [
+    {
+      "id": "should-trigger-01",
+      "type": "should_trigger",
+      "prompt": "这只股票RSI才20能不能抄底？",
+      "expected_behavior": "应激活 13-mean-reversion，判定为极端超卖信号（RSI<20），需进一步采集布林带位置和成交量数据完成三层确认，并提示前置校验01和大盘市场状态判断",
+      "notes": "标准正面场景：RSI 极端超卖触发均值回归策略"
+    },
+    {
+      "id": "should-trigger-02",
+      "type": "should_trigger",
+      "prompt": "超跌了能不能买？现在成交量比平时小很多",
+      "expected_behavior": "应激活 13-mean-reversion，识别超跌+成交量萎缩信号（恐慌抛售结束），需进一步采集 RSI14 和布林带数据完成三层确认",
+      "notes": "成交量萎缩场景：用户已提供量能信号，需补全其他两层"
+    },
+    {
+      "id": "should-trigger-03",
+      "type": "should_trigger",
+      "prompt": "布林带跌破下轨了，是不是机会？",
+      "expected_behavior": "应激活 13-mean-reversion，识别价格跌破布林带下轨信号，需进一步采集 RSI14 和成交量数据完成三层确认",
+      "notes": "布林带场景：用户已提供价格偏离信号，需补全其他两层"
+    },
+    {
+      "id": "should-not-trigger-01",
+      "type": "should_not_trigger",
+      "prompt": "这只股票突破20日新高了，能不能买？",
+      "expected_behavior": "不应激活本skill，因为这是趋势追涨信号（突破前高），应走 05-breakout-entry",
+      "notes": "诱饵：突破=趋势追涨，走05；本skill是超跌抄底，市场状态互斥"
+    },
+    {
+      "id": "should-not-trigger-02",
+      "type": "should_not_trigger",
+      "prompt": "帮我算仓位该多重？",
+      "expected_behavior": "不应激活本skill，因为这是头寸规模计算，应走 06-position-sizing",
+      "notes": "诱饵：仓位计算≠入场判断，走06"
+    }
+  ],
+  "minimum_pass_rate": 0.8,
+  "notes": "至少3条should_trigger+2条should_not_trigger。should_not_trigger容错为0。"
+}

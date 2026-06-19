@@ -1,6 +1,6 @@
 # 股票交易全套 Skill 体系 — Skill Index
 
-> 本体系由 book2skill v2.0 多书协同蒸馏，基于 7 本交易/投资经典跨书整合，共产出 **12** 个 skills。
+> 本体系由 book2skill v2.0 多书协同蒸馏，基于 7 本交易/投资经典跨书整合，共产出 **13** 个 skills。
 > 处理时间: 2026-06-19
 
 ## 关于本体系
@@ -32,6 +32,7 @@
 - [`06-position-sizing`](./06-position-sizing/SKILL.md) — 头寸规模：修正公式 股数=资金×1%/(2×ATR)+持仓限制
 - [`07-atr-stop-loss`](./07-atr-stop-loss/SKILL.md) — ATR止损：2×ATR止损+加仓止损max修正+跌停处理
 - [`08-trend-exit`](./08-trend-exit/SKILL.md) — 趋势出场：10日低点+浮盈回撤10%/15%+交易成本计算
+- [`13-mean-reversion`](./13-mean-reversion/SKILL.md) — 均值回归：RSI<30+布林带下轨+量缩确认，震荡市超跌反弹策略
 
 ### 心理层
 
@@ -80,6 +81,11 @@ graph TD
 
     S12[12-mindset-calibration] -.->|心态校准| S09
     S12 -.->|心态校准| S10
+
+    S13[13-mean-reversion] -->|震荡市入场| S06
+    S13 -->|超跌止损| S07
+    S13 -->|回归出场| S08
+    S05 -.->|趋势市互斥| S13
 ```
 
 图例:
