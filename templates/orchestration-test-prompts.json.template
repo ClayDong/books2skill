@@ -1,0 +1,141 @@
+{
+  "skill": "card::{{scenario-slug}}",
+  "scenario": "{{SCENARIO}}",
+  "version": "0.1.0",
+  "source_book": "orchestration",
+  "darwin_compatible": true,
+  "test_type": "orchestration",
+  "test_cases": [
+    {
+      "id": "orchestrate-01",
+      "type": "should_orchestrate",
+      "intent": "{{用户的典型意图 1}}",
+      "context": {
+        "time_horizon": "短期|中期|长期",
+        "risk_preference": "保守|中性|激进",
+        "reversibility": "可逆|部分可逆|不可逆",
+        "information_completeness": "完备|部分|不足",
+        "stakeholders": "个人|团队|组织"
+      },
+      "expected_skills": ["{{book-slug}}::{{skill-a}}", "{{book-slug}}::{{skill-b}}"],
+      "expected_flow": "前置 → 核心 → 校验 → 输出",
+      "expected_output": "应激活上述 skill 组合，按编排 DAG 执行",
+      "notes": "正面场景：意图明确，无冲突"
+    },
+    {
+      "id": "orchestrate-02",
+      "type": "should_orchestrate_with_conflict",
+      "intent": "{{命中冲突的意图}}",
+      "context": {
+        "time_horizon": "...",
+        "risk_preference": "...",
+        "reversibility": "...",
+        "information_completeness": "...",
+        "stakeholders": "..."
+      },
+      "expected_skills": ["{{conflicting-skill-a}}", "{{conflicting-skill-b}}"],
+      "expected_conflict_resolution": "situational|paradigmatic|temporal",
+      "expected_output": "应检测到冲突，按仲裁规则消解（情境互补型）或呈现多元视角（范式对立型）或按情境选择新旧方法论（时代演变型）",
+      "notes": "冲突场景：测试冲突检测和消解，三种冲突类型各至少 1 条"
+    },
+    {
+      "id": "orchestrate-03",
+      "type": "should_not_orchestrate",
+      "intent": "{{不相关的意图}}",
+      "expected_skills": [],
+      "expected_output": "不应激活本决策卡片的任何 skill",
+      "notes": "诱饵：意图不属于本卡片覆盖的场景"
+    },
+    {
+      "id": "fallback-01",
+      "type": "should_fallback",
+      "intent": "{{意图模糊或信息不足}}",
+      "context": {
+        "information_completeness": "不足"
+      },
+      "expected_skills": ["{{fallback-skill}}"],
+      "expected_output": "应走兜底路径，触发澄清式提问或降级方案",
+      "notes": "兜底场景：测试失败处理。should_fallback 容错为 0，必须 100% 通过。",
+      "tolerance": 0
+    },
+    {
+      "id": "arbitration-01",
+      "type": "should_arbitrate",
+      "intent": "{{情境互补型冲突意图}}",
+      "context": {
+        "time_horizon": "短期",
+        "risk_preference": "保守",
+        "reversibility": "不可逆",
+        "stakeholders": "组织"
+      },
+      "expected_arbitration": "prefer {{skill-a}} over {{skill-b}}",
+      "expected_reason": "短期+保守+不可逆+组织级情境下，{{skill-a}} 更适用",
+      "notes": "仲裁场景：测试五维度信号驱动的冲突裁决"
+    },
+    {
+      "id": "arbitration-02",
+      "type": "should_arbitrate_temporal",
+      "intent": "{{时代演变型冲突意图}}",
+      "context": {
+        "time_horizon": "...",
+        "market_maturity": "成熟市场|新兴市场",
+        "resource_constraint": "充足|受限",
+        "demand_clarity": "明确|模糊"
+      },
+      "expected_skills": ["{{newer-skill}}", "{{older-skill}}"],
+      "expected_arbitration": "temporal-protocol 选择",
+      "expected_reason": "按情境选择新旧方法论：成熟市场+资源充足+需求明确 → 旧方法论；新兴市场+资源受限+需求模糊 → 新方法论",
+      "expected_output": "应调用 temporal-protocol，按 market_maturity/resource_constraint/demand_clarity 三维度选择，而非简单优先用新版",
+      "notes": "时代演变型冲突专用测试：测试 temporal-protocol 是否被正确触发和执行"
+    },
+    {
+      "id": "detect-01",
+      "type": "should_detect_conflict",
+      "intent": "{{潜在冲突意图}}",
+      "expected_conflict_detected": true,
+      "expected_conflict_type": "situational|paradigmatic|temporal",
+      "expected_conflict_source": "historical|runtime",
+      "expected_output": "应通过 conflict-detector 检测到冲突，先查 KNOWN_CONFLICTS（historical），未命中再运行时检测（runtime）",
+      "notes": "冲突检测专项：测试 conflict-detector 的历史优先 + 运行时兜底机制"
+    },
+    {
+      "id": "provenance-01",
+      "type": "should_preserve_provenance",
+      "intent": "{{需要溯源的意图}}",
+      "expected_skills": ["{{book-slug}}::{{skill-a}}"],
+      "expected_provenance_format": "[来自《{{书名}}》—— {{skill 人类可读名}}]",
+      "expected_output": "输出中每个 skill 引用必须带人类可读 provenance 标注，格式：[来自《X》—— skill 人类可读名]",
+      "notes": "溯源专项：测试 provenance 是否在所有引用处完整保留且人类可读"
+    },
+    {
+      "id": "dag-01",
+      "type": "should_respect_dag_order",
+      "intent": "{{需要按顺序执行多 skill 的意图}}",
+      "expected_skills": ["{{skill-a}}", "{{skill-b}}", "{{skill-c}}"],
+      "expected_dag_order": ["{{skill-a}}", "{{skill-b}}", "{{skill-c}}"],
+      "expected_dag_supports_loop": true,
+      "expected_output": "应按 DAG 定义的顺序执行 skill，支持回环（如校验失败回到前置 skill）",
+      "notes": "DAG 顺序专项：测试编排层是否严格按 DAG 拓扑序执行，且支持回环"
+    }
+  ],
+  "minimum_pass_rate": 0.9,
+  "minimum_pass_rate_by_type": {
+    "should_fallback": 1.0,
+    "should_arbitrate_temporal": 1.0,
+    "should_detect_conflict": 1.0,
+    "should_preserve_provenance": 1.0,
+    "should_respect_dag_order": 1.0
+  },
+  "required_test_types": [
+    "should_orchestrate",
+    "should_orchestrate_with_conflict",
+    "should_not_orchestrate",
+    "should_fallback",
+    "should_arbitrate",
+    "should_arbitrate_temporal",
+    "should_detect_conflict",
+    "should_preserve_provenance",
+    "should_respect_dag_order"
+  ],
+  "notes": "编排层测试对齐 darwin-skill 格式：skill 字段值为 card::<scenario-slug>。至少 2 条 should_orchestrate + 1 条 should_orchestrate_with_conflict + 1 条 should_not_orchestrate + 1 条 should_fallback + 1 条 should_arbitrate + 1 条 should_arbitrate_temporal + 1 条 should_detect_conflict + 1 条 should_preserve_provenance + 1 条 should_respect_dag_order。should_fallback / should_arbitrate_temporal / should_detect_conflict / should_preserve_provenance / should_respect_dag_order 容错为 0，必须 100% 通过。"
+}

@@ -1,0 +1,87 @@
+# ===== 敏感信息保护 =====
+# 环境变量与密钥文件（本地使用，不上传）
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+*.p12
+*.pfx
+
+# 飞书 / Lark 凭证
+feishu-credentials.json
+lark-credentials.json
+*cli*.json
+!lark-cli.json.template
+
+# API keys / tokens（任何可能包含密钥的配置）
+secrets.json
+config.local.json
+*secret*
+*apikey*
+*api_key*
+*token*
+
+# ===== 运行时生成数据 =====
+# 多书协同产出层（运行时生成，包含本地拆书数据）
+library/
+
+# 单书蒸馏产出（运行时生成，按需保留本地）
+# 注意：如果你想分享拆完的 skill packs，请放在独立仓库
+output/
+outputs/
+dist/
+build/
+
+# ===== 本地配置与缓存 =====
+# Trae IDE 本地配置
+.trae/
+.trae-cn/
+
+# Claude Code 本地配置
+.claude/
+
+# 其他 IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# ===== 操作系统文件 =====
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Linux
+*~
+
+# ===== 日志与临时文件 =====
+*.log
+logs/
+tmp/
+temp/
+
+# ===== 包管理 =====
+node_modules/
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+
+# ===== 项目说明 =====
+# library/ 目录是运行时生成的多书协同数据层，包含：
+# - GLOBAL_INDEX.md（全局 skill 索引）
+# - GLOSSARY_UNIFIED.md（统一术语表）
+# - CONFLICTS.md（冲突矩阵）
+# - DECISION_CARDS/（决策卡片）
+# 这些文件由阶段 4.5 自动生成，可能包含本地拆书数据，不上传
+# 模板文件在 templates/ 目录中，已包含

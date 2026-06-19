@@ -1,0 +1,91 @@
+---
+auto_gen: true
+generated_by: stage-4.5
+last_updated: "{{DATE}}"
+---
+
+<!-- AUTO-GEN START -->
+# 统一术语表 — Unified Glossary
+
+> 本文件由阶段 4.5（全局索引汇聚）自动生成，消解跨书术语冲突。
+> 每次拆完新书后自动更新。
+> 本文件位于 AUTO-GEN 标记之间的内容会被全量重建，标记之外的用户自定义内容会被保留。
+
+## 基本信息
+
+- **生成时间**: {{DATE}}
+- **术语条目数**: {{N}}
+- **涉及书目**: {{BOOKS_LIST}}
+
+---
+
+## 术语列表
+
+### {{全局术语 ID}} — {{canonical_term}}
+
+```yaml
+global_id: g001
+canonical_term: {{标准术语}}
+aliases:                    # 异名同义：不同书用不同词但含义相同
+  - "{{别名 1}}"
+  - "{{别名 2}}"
+conflicts_with:             # 同名异义：不同书用同一个词但含义不同
+  - term: "{{冲突术语}}"
+    book: "{{书名}}"
+    book_definition: "{{该书对这个术语的定义}}"
+    distinction: "{{和标准术语的差异}}"
+definitions:                # 各书对这个术语的定义
+  - book: "{{书名 1}}"
+    author_definition: "{{作者原文定义}}"
+    key_distinction: "{{和常识用法的差异}}"
+    maps_to_global: true    # 该书用法与全局标准一致
+  - book: "{{书名 2}}"
+    author_definition: "{{作者原文定义}}"
+    key_distinction: "{{和常识用法的差异}}"
+    maps_to_global: false   # 该书用法与全局标准不同
+    author_specific_override: "{{该书特有的用法说明}}"
+why_it_matters: |
+  {{为什么跨书消解这个术语很重要}}
+tags: [{{tag1}}, {{tag2}}]
+```
+
+---
+
+## 术语消解规则
+
+### 同名异义处理
+
+当多本书用同一个词但含义不同时：
+1. 保留各自定义，不强行合并
+2. 在 `conflicts_with` 字段标注冲突
+3. 跨书 skill 引用该术语时，必须标注"来自哪本书的用法"
+
+### 异名同义处理
+
+当不同词但含义相同时：
+1. 合并为一条，选最常用的作为 `canonical_term`
+2. 其他词列入 `aliases`
+3. 跨书 skill 引用时统一用 `canonical_term`
+
+### 作者特有用法
+
+当某本书的用法与全局标准不同时：
+1. 保留作者原义（不覆盖）
+2. 标注 `author_specific_override`
+3. 该书的 skill 引用术语时，用作者原义；跨书整合时用全局标准
+
+---
+
+## 审计信息
+
+- **上次更新**: {{DATE}}
+- **新增术语数**: {{本次新增}}
+- **新增冲突数**: {{本次新检测到的同名异义}}
+<!-- AUTO-GEN END -->
+
+---
+
+## 用户自定义补充（可选）
+
+> 此段位于 AUTO-GEN 标记之外，不会被自动重建覆盖。
+> 如需添加项目特有的术语注释、人工校订记录、或与外部术语表的映射关系，请在此处书写。

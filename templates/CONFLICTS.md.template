@@ -1,0 +1,108 @@
+---
+auto_gen: true
+last_updated: {{DATE}}
+---
+
+<!-- AUTO-GEN START -->
+# 跨书冲突矩阵 — Conflicts
+
+> 本文件由阶段 4.5（全局索引汇聚）自动生成，记录已知的跨书观点冲突。
+> 运行时检测到的新冲突会增量回写到"冲突检测日志"段。
+> 每次拆完新书后自动更新（主冲突列表全量重建，日志段增量保留）。
+>
+> **保护机制**：主冲突列表（AUTO-GEN START 到 AUTO-GEN INCREMENTAL START 之间）全量重建；日志段（INCREMENTAL 标记内）增量追加；标记外的用户自定义内容保留。
+
+## 基本信息
+
+- **生成时间**: {{DATE}}
+- **冲突条目数**: {{N}}
+- **涉及书目**: {{BOOKS_LIST}}
+
+---
+
+## 冲突类型说明
+
+| 类型 | 含义 | 可消解 | 处理方式 |
+|---|---|---|---|
+| `situational` | 情境互补型：不同情境下各自正确 | ✅ 可消解 | 用 judge-protocol 按情境信号裁决 |
+| `paradigmatic` | 范式对立型：基于不同范式，不可消解 | ❌ 不可消解 | 用 debate-protocol 呈现多元视角 |
+| `temporal` | 时代演变型：新旧方法论更替 | ✅ 可消解 | 用 temporal-protocol 按情境选择新旧方法论（旧=成熟市场+资源充足+需求明确；新=新兴市场+资源受限+需求模糊） |
+
+---
+
+## 冲突列表
+
+### C01 — {{冲突标题}}
+
+```yaml
+conflict_id: C01
+title: {{冲突标题}}
+type: situational|paradigmatic|temporal
+skills_involved:
+  - skill_id: "{{book-a}}::{{skill-1}}"
+    book: "{{书名 A}}"
+    position: "{{A 派立场}}"
+    evidence: "{{A 书的原文引用或方法论依据}}"
+  - skill_id: "{{book-b}}::{{skill-2}}"
+    book: "{{书名 B}}"
+    position: "{{B 派立场}}"
+    evidence: "{{B 书的原文引用或方法论依据}}"
+conflict_description: |
+  {{冲突的具体描述：两个 skill 对同一类问题给出相反的行动建议}}
+resolution_hint: |
+  {{消解提示：
+  - situational：各自适用的情境条件
+  - paradigmatic：各自信奉的范式差异
+  - temporal：新旧方法论的适用场景对比}}
+arbitration_rules:               # 仲裁规则（用于决策卡片，结构化表达）
+  - condition:
+      field: time_horizon
+      operator: in
+      value: [短期, 紧急]
+    prefer: "{{book-a}}::{{skill-1}}"
+    reason: "{{为什么这个情境下选这个}}"
+  - condition:
+      field: time_horizon
+      operator: in
+      value: [长期]
+    prefer: "{{book-b}}::{{skill-2}}"
+    reason: "{{为什么}}"
+detected_at: {{DATE}}             # 首次检测时间
+detected_by: library-build|conflict-detector  # 检测来源
+last_updated: {{DATE}}
+last_verified_date: {{DATE}}      # 最后验证时间（darwin 进化或 B 段修改后需重检）
+```
+
+### C02 — {{冲突标题}}
+
+```yaml
+conflict_id: C02
+...
+```
+
+<!-- AUTO-GEN INCREMENTAL START -->
+
+## 冲突检测日志
+
+> 记录每次检测到的新冲突（增量更新，不随主列表全量重建而丢失）
+
+| 日期 | 冲突编号 | 检测来源 | 涉及书目 | 类型 | 备注 |
+|---|---|---|---|---|---|
+| {{DATE}} | C01 | library-build | {{书 A}} vs {{书 B}} | situational | 首次检测 |
+| {{DATE}} | C02 | conflict-detector | {{书 C}} vs {{书 D}} | paradigmatic | 运行时检测 |
+
+<!-- AUTO-GEN INCREMENTAL END -->
+
+---
+
+## 审计信息
+
+- **上次更新**: {{DATE}}
+- **新增冲突数**: {{本次新增}}
+- **消解冲突数**: {{本次新增 resolution_hint 的冲突数量}}
+- **冲突升级数**: {{本次从 situational 升级为 paradigmatic 的数量}}
+<!-- AUTO-GEN END -->
+
+---
+
+<!-- 用户自定义区域：在此标记外添加的注释、补充说明等会被保留，不会被自动汇聚覆盖 -->

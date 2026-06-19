@@ -1,0 +1,89 @@
+---
+auto_gen: true
+last_updated: {{DATE}}
+---
+
+<!-- AUTO-GEN START -->
+# 全局 Skill 索引 — Global Index
+
+> 本文件由阶段 4.5（全局索引汇聚）自动生成，包含所有已拆书的 skill 扁平列表。
+> 每次拆完新书后自动更新。
+> 
+> **保护机制**：AUTO-GEN 标记内的内容由自动汇聚覆盖，标记外的用户自定义内容会保留。
+
+## 基本信息
+
+- **生成时间**: {{DATE}}
+- **已拆书目数**: {{N}}
+- **总 skill 数**: {{M}}
+
+---
+
+## 已拆书目
+
+| # | 书名 | 作者 | authority | skill 数 | INDEX |
+|---|---|---|---|---|---|
+| 1 | {{BOOK_1}} | {{AUTHOR_1}} | A/B/C | {{COUNT_1}} | [INDEX](../books/{{book-slug-1}}/INDEX.md) |
+| 2 | {{BOOK_2}} | {{AUTHOR_2}} | A/B/C | {{COUNT_2}} | [INDEX](../books/{{book-slug-2}}/INDEX.md) |
+| ... | ... | ... | ... | ... | ... |
+
+> authority 分级：A=经典权威 / B=领域参考 / C=补充视角。由用户在拆书时标注或 LLM 初判后确认。
+
+---
+
+## Skill 列表（按主题分组）
+
+### {{主题 1}}
+
+| skill_id | source_book | description | i_summary | tags | authority |
+|---|---|---|---|---|---|
+| `{{book-slug}}::{{skill-slug}}` | {{书名}} | {{一句话描述}} | {{I 段摘要}} | [{{tag1}}, {{tag2}}] | A/B/C |
+| ... | ... | ... | ... | ... | ... |
+
+### {{主题 2}}
+
+| skill_id | source_book | description | i_summary | tags | authority |
+|---|---|---|---|---|---|
+| ... | ... | ... | ... | ... | ... |
+
+> i_summary：skill 的 I 段（Interpretation）一句话摘要，由阶段 4.5 从 SKILL.md 提取，供 coarse-recall 做语义召回。
+
+---
+
+## 跨书关系图
+
+```mermaid
+graph LR
+    {{book-a}}::{{skill-1}} -->|depends-on| {{book-b}}::{{skill-2}}
+    {{book-a}}::{{skill-1}} -.->|contrasts-with| {{book-c}}::{{skill-3}}
+    {{book-b}}::{{skill-2}} ===>|composes-with| {{book-c}}::{{skill-4}}
+```
+
+图例:
+- `-->`  depends-on（跨书依赖）
+- `-.->` contrasts-with（跨书对比）
+- `===>` composes-with（跨书组合）
+
+---
+
+## 跨书冲突索引
+
+> 完整冲突详情见 [CONFLICTS.md](./CONFLICTS.md)
+
+| 冲突编号 | 涉及 skill | 冲突类型 | 消解提示 |
+|---|---|---|---|
+| C01 | `{{book-a}}::{{skill-1}}` vs `{{book-b}}::{{skill-2}}` | situational/paradigmatic/temporal | {{一句话提示}} |
+| ... | ... | ... | ... |
+
+---
+
+## 审计信息
+
+- **上次更新**: {{DATE}}
+- **新增书目**: {{本次新增的书名}}
+- **新增 skill 数**: {{本次新增的数量}}
+<!-- AUTO-GEN END -->
+
+---
+
+<!-- 用户自定义区域：在此标记外添加的注释、补充说明、主题调整等会被保留，不会被自动汇聚覆盖 -->

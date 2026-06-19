@@ -1,0 +1,225 @@
+# {{SCENARIO}} — 决策卡片
+
+> 本卡片由 book2skill 多书协同层（阶段 6）产出，固化了高频决策场景的编排逻辑。
+
+## 基本信息
+
+```yaml
+card_id: {{card_id}}
+scenario: {{SCENARIO}}
+intent_type: decision
+books_involved: [{{BOOK_1}}, {{BOOK_2}}, ...]
+conflict_level: A|B|C
+last_updated: {{DATE}}
+```
+
+---
+
+## 0. 适用边界
+
+- **适用**: {{适用场景描述}}
+- **不适用**: {{不适用场景描述}}
+- **超出边界时**: 回退到阶段 5 动态编排
+
+---
+
+## 1. 决策情境分类
+
+| 维度 | 取值 | 影响 |
+|---|---|---|
+| **可逆性** | 不可逆 / 高成本可逆 / 低成本可逆 | 不可逆和高成本可逆都需要更多校验 skill |
+| **影响范围** | 仅自己 / 涉及他人 / 组织级 | 范围越大需要更多视角 |
+| **时间压力** | 紧急 / 充裕 | 紧急时走快速路径 |
+| **信息完备度** | 充分 / 不足 | 不足时触发"先补信息"前置 skill |
+| **利益相关方** | 仅自己 / 涉及他人 / 需他人执行 | 涉及他人时需要协商/沟通 skill 作为前置 |
+
+**维度优先级**：可逆性 > 利益相关方 > 信息完备度 > 时间压力
+
+**组合规则**：不可逆 + 信息不足 → 强制走"先补信息"前置 skill，即使时间压力紧急
+
+---
+
+## 2. 参与的 skill 列表
+
+### 前置 skill（决策前必须先跑）
+
+- `{{book-slug}}::{{skill-slug}}` — {{一句话说明为什么前置}}
+
+### 核心 skill（决策的主要方法论）
+
+- `{{book-slug}}::{{skill-slug}}` — {{一句话说明核心作用}}
+
+### 校验 skill（对核心结论做 sanity check）
+
+- `{{book-slug}}::{{skill-slug}}` — {{一句话说明校验什么}}
+
+### 兜底 skill（核心结论不可靠时的降级方案）
+
+- `{{book-slug}}::{{skill-slug}}` — {{一句话说明降级方案}}
+
+---
+
+## 3. 编排流程
+
+```mermaid
+graph TD
+    A[前置:{{skill-name}}] --> B{可逆性?}
+    B -->|不可逆/高成本可逆| C[核心:{{skill-name}}]
+    B -->|低成本可逆| D[核心:{{skill-name}} 快速路径]
+    C --> E{信息完备?}
+    E -->|不足| F[补信息:{{skill-name}}]
+    F --> C
+    E -->|充分| G[校验:{{skill-name}}]
+    D --> G
+    G --> H{通过?}
+    H -->|是| I[输出决策]
+    H -->|否| J[兜底:{{skill-name}}]
+    J -->|回环| C
+```
+
+> DAG 支持回环：校验失败时可回到前置或核心 skill 重新执行。
+
+---
+
+## 4. 冲突仲裁规则
+
+### 情境互补型冲突（可消解）
+
+```yaml
+arbitration_rules:
+  - condition:
+      field: time_horizon
+      operator: in
+      value: [短期, 紧急]
+    prefer: "{{book-slug}}::{{skill-slug}}"
+    reason: "{{为什么这个情境下选这个 skill}}"
+  - condition:
+      field: time_horizon
+      operator: in
+      value: [长期]
+    prefer: "{{book-slug}}::{{skill-slug}}"
+    reason: "{{为什么}}"
+  - condition:
+      field: time_horizon
+      operator: equals
+      value: 未知
+    action: "触发 horizon 诊断子流程"
+    diagnostic_questions:
+      - "你目前的主要收入来源是否依赖这次投资？(是→短期)"
+      - "你是否有 3 年以上的应急储备？(是→可长期)"
+    after_diagnosis: "根据诊断结果重新走仲裁规则"
+    fallback: "诊断后仍无法判断 → 呈现两派观点 + 决策清单"
+```
+
+### 范式对立型冲突（不可消解）
+
+```yaml
+- conflict: "{{冲突描述}}"
+  action: "呈现多元视角，不强行消解"
+  a_position: "{{A 派立场}}"
+  b_position: "{{B 派立场}}"
+  decision_criteria:
+    - "{{用户应基于什么判断选 A}}"
+    - "{{用户应基于什么判断选 B}}"
+```
+
+### temporal 冲突（按情境选择新旧方法论）
+
+```yaml
+- conflict: "{{冲突描述}}"
+  old_methodology: "{{book-slug}}::{{skill-slug}}"
+  new_methodology: "{{book-slug}}::{{skill-slug}}"
+  arbitration:
+    - condition:
+        field: market_maturity
+        operator: equals
+        value: 成熟
+      prefer: old
+      reason: "成熟市场适用旧方法论（体系化、长期主义）"
+    - condition:
+        field: market_maturity
+        operator: equals
+        value: 新兴
+      prefer: new
+      reason: "新兴市场适用新方法论（试错、迭代）"
+```
+
+### 兜底规则
+
+```yaml
+- condition: "核心结论不可靠 / 信息不足"
+  action: "走兜底 skill"
+  fallback_skill: "{{book-slug}}::{{skill-slug}}"
+  fallback_message: "给用户的反馈消息"
+```
+
+---
+
+## 5. 决策日志模板
+
+用户用本卡片做决策后，系统自动填充前半段，用户回填后半段：
+
+```markdown
+## 决策日志
+
+- **日期**: {{DATE}}（系统自动填充）
+- **情境**: {{具体情境描述}}（系统自动填充）
+- **使用的 skill**: {{skill 列表}}（系统自动填充）
+- **决策**: {{做了什么决策}}（系统自动填充）
+- **理由**: {{基于什么理由}}（系统自动填充）
+- **预期结果**: {{预期}}（系统自动填充）
+- **实际结果**: （待回填，复盘触发时提醒用户）
+- **偏差分析**: （待回填）
+- **复盘**: （待回填）
+- **仲裁规则调整建议**: （待回填）
+```
+
+### 复盘触发条件
+
+```yaml
+review_trigger:
+  condition: "{{30天后 / 用户主动询问该决策结果 / 同类意图再次提出}}"
+  action: "提醒用户：你 {{N}} 天前用此卡片做了 {{决策}} 决策，现在结果如何？要不要复盘？"
+  timing:
+    短线投资: "1 周后"
+    职业决策: "3 个月后"
+    战略决策: "1 年后"
+```
+
+---
+
+## 6. 卡片进化
+
+```yaml
+evolution:
+  cumulative_reviews: {{N}}  # 累计回溯记录数
+  arbitration_accuracy: {{百分比}}%  # 仲裁规则准确率（预期 vs 实际一致的比例）
+  rules_to_adjust: []  # 准确率 < 60% 的仲裁规则
+  rules_to_rebuild: []  # 准确率 < 30% 的仲裁规则，触发卡片重构
+  last_evolution_date: {{DATE}}
+```
+
+当累计回溯记录 ≥3 条后，自动统计仲裁规则准确率：
+- 准确率 < 60% → 标记为"待调整"
+- 准确率 < 30% → 触发卡片重构
+
+---
+
+## 7. 质量门
+
+- [ ] 决策情境已按五维度分类
+- [ ] 参与的 skill 都标注了角色
+- [ ] 编排 DAG 无环、无死锁（支持回环）
+- [ ] 冲突仲裁规则覆盖了所有已知冲突场景（含 temporal）
+- [ ] 有决策日志模板（含复盘触发条件）
+- [ ] 有适用边界声明
+- [ ] 通过编排压力测试（should_fallback 类 100% 通过，其余 ≥80%）
+
+---
+
+## 审计信息
+
+- **构造时间**: {{DATE}}
+- **参与的冲突编号**: {{C01, C02, ...}}
+- **测试通过率**: {{%}}（详见 orchestration-test-prompts.json）
+- **darwin 兼容**: 是（card_id 对应 darwin skill 字段 `card::<scenario-slug>`）
