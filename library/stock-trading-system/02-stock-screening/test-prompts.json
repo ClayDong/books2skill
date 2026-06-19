@@ -1,0 +1,52 @@
+{
+  "skill": "02-stock-screening",
+  "version": "0.1.0",
+  "source_book": "《投资中最简单的事》邱国鹭 + 《笑傲股市》欧奈尔（训练数据）",
+  "darwin_compatible": true,
+  "test_cases": [
+    {
+      "id": "should-trigger-01",
+      "type": "should_trigger",
+      "prompt": "这只股票 PE 30 倍，PB 4 倍，ROE 15%，估值贵不贵？值不值得买？",
+      "expected_behavior": "应激活 02-stock-screening，先检查大盘是否在 60 日线上方，再评估行业格局、基本面三板斧、定价权、CANSLIM、陷阱排查；输出估值区间和通过/淘汰结论",
+      "notes": "典型估值/选股场景，含'估值贵不贵''值不值得买'两个 trigger，PE/PB/ROE 数据齐全"
+    },
+    {
+      "id": "should-trigger-02",
+      "type": "should_trigger",
+      "prompt": "白酒行业格局怎么样？龙头有没有定价权？现在是不是价值陷阱？",
+      "expected_behavior": "应激活 02-stock-screening，评估白酒行业格局（月朗星稀）、定价权来源（品牌）、排查价值陷阱；输出行业评估和陷阱排查结果",
+      "notes": "典型行业格局/定价权场景，含'行业格局''定价权''价值陷阱'三个 trigger"
+    },
+    {
+      "id": "should-trigger-03",
+      "type": "should_trigger",
+      "prompt": "我想用 CANSLIM 筛选成长股，当季 EPS 增长 30%，年度 EPS 增长 28%，有新产品，算不算合格？",
+      "expected_behavior": "应激活 02-stock-screening，逐项检查 CANSLIM 7 要素（C/A/N/S/L/I/M），≥5 项通过则合格；输出通过/淘汰结论",
+      "notes": "典型 CANSLIM 场景，含'CANSLIM''EPS'两个 trigger，数据齐全可逐项验证"
+    },
+    {
+      "id": "should-not-trigger-01",
+      "type": "should_not_trigger",
+      "prompt": "我总资金 50 万，这笔交易仓位该多重？单笔风险怎么算？",
+      "expected_behavior": "不应激活本 skill，因为这是仓位/风控问题，不涉及选股/估值。应转 01-risk-control-baseline",
+      "notes": "诱饵：风控问题，看似涉及股票交易但实际是仓位计算，不涉及选股"
+    },
+    {
+      "id": "should-not-trigger-02",
+      "type": "should_not_trigger",
+      "prompt": "这个K线锤子线形态是什么意思？在关键支撑位吗？",
+      "expected_behavior": "不应激活本 skill，因为这是 K线形态识别问题，不涉及基本面/估值。应转 03-kline-signal",
+      "notes": "诱饵：K线问题，看似涉及'关键支撑位'但实际是技术形态分析，不涉及选股"
+    },
+    {
+      "id": "edge-01",
+      "type": "edge_case",
+      "prompt": "大盘现在在 60 日线下方，但我发现一只 PE 只有 8 倍的股票，估值很便宜，能不能买？",
+      "expected_behavior": "边界判断：大盘 < 60 日线 → ❌ 禁止选股（关键修复规则）。即使个股估值便宜，大盘过滤未过也应空仓等待。应明确告知用户大盘过滤优先于个股估值",
+      "notes": "边界：大盘过滤 vs 个股低估值的冲突，触及关键修复规则（大盘 60 日线过滤）"
+    }
+  ],
+  "minimum_pass_rate": 0.8,
+  "notes": "至少 3 条 should_trigger + 2 条 should_not_trigger + 1 条 edge_case。全部 should_not_trigger 必须通过 (诱饵容错为 0)。"
+}

@@ -1,0 +1,52 @@
+{
+  "skill": "01-risk-control-baseline",
+  "version": "0.1.0",
+  "source_book": "《炒股的智慧》陈江挺 + 《巴菲特寫給股東的信》巴菲特 + 《投资中最简单的事》邱国鹭",
+  "darwin_compatible": true,
+  "test_cases": [
+    {
+      "id": "should-trigger-01",
+      "type": "should_trigger",
+      "prompt": "我准备买这只股票，总资金 50 万，这笔交易仓位该多重？单笔风险怎么算？",
+      "expected_behavior": "应激活 01-risk-control-baseline，计算单笔风险上限 = 50万 × 1% = 5000 元（默认），硬上限 50万 × 2% = 10000 元；引导用户先通过风控校验再进入选股",
+      "notes": "典型仓位/风险计算场景，含'仓位该多重''单笔风险'两个 trigger 信号"
+    },
+    {
+      "id": "should-trigger-02",
+      "type": "should_trigger",
+      "prompt": "我账户最近回撤了 18%，现在还能不能继续交易？要不要减仓？",
+      "expected_behavior": "应激活 01-risk-control-baseline，判定 15% ≤ 回撤 18% < 20% → ⚠️ 强制减仓至半仓，禁止新开仓；给出减仓建议",
+      "notes": "典型账户回撤场景，18% 触及 15% 减仓阈值，含'回撤''减仓'两个 trigger"
+    },
+    {
+      "id": "should-trigger-03",
+      "type": "should_trigger",
+      "prompt": "我想融资加杠杆买股票，这样收益能翻倍，行不行？",
+      "expected_behavior": "应激活 01-risk-control-baseline，判定发现杠杆 → ❌ 禁止交易，引用巴菲特 99:1 原则强制要求去杠杆",
+      "notes": "典型杠杆场景，含'融资''加杠杆'两个 trigger，触及杠杆禁令红线"
+    },
+    {
+      "id": "should-not-trigger-01",
+      "type": "should_not_trigger",
+      "prompt": "这只股票基本面怎么样？PE 多少算合理？行业格局好不好？",
+      "expected_behavior": "不应激活本 skill，因为这是纯选股/基本面分析问题，不涉及仓位/风险/回撤。应转 02-stock-screening",
+      "notes": "诱饵：选股问题，看似涉及股票但实际是基本面分析，不涉及风控"
+    },
+    {
+      "id": "should-not-trigger-02",
+      "type": "should_not_trigger",
+      "prompt": "这个K线锤子线形态是什么意思？成交量配合不配合？",
+      "expected_behavior": "不应激活本 skill，因为这是 K线形态识别问题，不涉及仓位/风险。应转 03-kline-signal",
+      "notes": "诱饵：K线问题，看似涉及交易但实际是技术形态分析，不涉及风控"
+    },
+    {
+      "id": "edge-01",
+      "type": "edge_case",
+      "prompt": "我总资金只有 5 万，按 1% 单笔风险只能亏 500 元，但佣金印花税就要几十块，这样还能交易吗？",
+      "expected_behavior": "边界判断：1% 阈值对小资金确实不友好（交易成本占比过高）。应承认小资金场景下 1% 阈值的局限，建议要么提高资金规模，要么调整阈值至 2%（硬上限）但需明确风险。不直接禁止，但提示风险",
+      "notes": "边界：小资金场景，1% 阈值与交易成本的冲突，触及作者盲点（资金规模依赖）"
+    }
+  ],
+  "minimum_pass_rate": 0.8,
+  "notes": "至少 3 条 should_trigger + 2 条 should_not_trigger + 1 条 edge_case。全部 should_not_trigger 必须通过 (诱饵容错为 0)。"
+}

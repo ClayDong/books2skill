@@ -1,0 +1,52 @@
+{
+  "skill": "12-mindset-calibration",
+  "version": "0.1.0",
+  "source_book": "《易经的奥秘》曾仕强 + 《周易决策智慧精要》公版",
+  "darwin_compatible": true,
+  "test_cases": [
+    {
+      "id": "should-trigger-01",
+      "type": "should_trigger",
+      "prompt": "我最近连续赚了6个月，感觉自己终于开窍了，心态有点飘，想加杠杆干一票大的，怎么调整心态？",
+      "expected_behavior": "应激活 12-mindset-calibration，并识别状态为'飘'，时位判断为'鼎盛期+熟手位'，用'亢龙有悔'和'安不忘危'原则做心态校准，输出心境建议但绝不输出加杠杆的交易指令",
+      "notes": "正面场景：典型盈利后心态飘了，需要亢龙有悔的心态校准"
+    },
+    {
+      "id": "should-trigger-02",
+      "type": "should_trigger",
+      "prompt": "连续亏了两个月，每天焦虑失眠，觉得自己可能不适合做交易，怎么调整心态？",
+      "expected_behavior": "应激活 12-mindset-calibration，并识别状态为'崩'，用'穷则变'和'惧以终始'原则做心态校准，输出心境建议帮助用户重建信心，但不输出交易指令",
+      "notes": "正面场景：典型亏损后心态崩了，需要穷则变的心态校准"
+    },
+    {
+      "id": "should-trigger-03",
+      "type": "should_trigger",
+      "prompt": "最近没有好的交易机会，但我忍不住想出手，空仓很难受，怎么调整这种心态？",
+      "expected_behavior": "应激活 12-mindset-calibration，并识别状态为'急'，用'藏器待时'和'趣时'原则做心态校准，帮助用户接受'等待也是交易的一部分'",
+      "notes": "正面场景：典型急于出手的心态，需要藏器待时的校准"
+    },
+    {
+      "id": "should-not-trigger-01",
+      "type": "should_not_trigger",
+      "prompt": "帮我看看现在该不该买入这只股票，趋势是向上还是向下？",
+      "expected_behavior": "不应激活本 skill，因为这是具体交易决策需求（买卖点/趋势判断），本 skill 严格限界不输出交易信号，应走量化系统",
+      "notes": "诱饵：交易决策伪装成心态问题，本 skill 绝不输出买卖信号"
+    },
+    {
+      "id": "should-not-trigger-02",
+      "type": "should_not_trigger",
+      "prompt": "我现在持仓亏了5000块，心里很慌想加仓扳回来，帮我检测一下情绪状态",
+      "expected_behavior": "不应激活本 skill，因为这是实时情绪检测需求，应走 09-emotion-control 检测被剥夺超级反应倾向，心态校准是心境调适不是实时情绪检测",
+      "notes": "诱饵：实时情绪检测伪装成心态校准，情绪控制输出操作建议，心态校准只调心境"
+    },
+    {
+      "id": "edge-01",
+      "type": "edge_case",
+      "prompt": "周易说亢龙有悔该收了，但我的量化系统说趋势还没破，我该听谁的？",
+      "expected_behavior": "边界判断：明确回答'以量化系统为准'。本 skill 的'亢龙有悔'是心态层面的校准（高位时心态要收），不是交易指令。趋势是否破了走量化系统判断，心态校准不覆盖量化信号",
+      "notes": "边界：周易原则与量化系统冲突的边界场景，必须明确以量化系统为准"
+    }
+  ],
+  "minimum_pass_rate": 0.8,
+  "notes": "至少3条should_trigger+2条should_not_trigger+1条edge_case。should_not_trigger容错为0——交易决策和实时情绪检测绝不能误激活心态校准skill。本skill严格限界：不输出交易信号、不判断买卖点、不计算仓位。"
+}

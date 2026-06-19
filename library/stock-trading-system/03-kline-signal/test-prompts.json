@@ -1,0 +1,52 @@
+{
+  "skill": "03-kline-signal",
+  "version": "0.1.0",
+  "source_book": "《日本蜡烛图技术》尼森（训练数据）",
+  "darwin_compatible": true,
+  "test_cases": [
+    {
+      "id": "should-trigger-01",
+      "type": "should_trigger",
+      "prompt": "这只股票今天收了一根锤子线，在关键支撑位附近，成交量也放大了，是不是反转信号？",
+      "expected_behavior": "应激活 03-kline-signal，识别锤子线形态 → 检查位置（距关键支撑位 ≤ 1×ATR）→ 检查成交量（≥ 5日均量 1.5倍）→ 分级为强信号；输出信号类型+方向+强度+确认条件",
+      "notes": "典型 K线形态场景，含'锤子线''关键支撑位''成交量'三个 trigger，三项齐全可判强信号"
+    },
+    {
+      "id": "should-trigger-02",
+      "type": "should_trigger",
+      "prompt": "这里出现了一个看涨吞没形态，但成交量没怎么放大，这个信号可靠吗？",
+      "expected_behavior": "应激活 03-kline-signal，识别吞没形态 → 检查成交量（< 5日均量 1.5倍 → 不确认）→ 降级为中或弱信号；输出信号强度和等待建议",
+      "notes": "典型形态+量能确认场景，含'吞没形态''成交量''可靠吗'三个 trigger，量能不足触发降级"
+    },
+    {
+      "id": "should-trigger-03",
+      "type": "should_trigger",
+      "prompt": "晨星形态出现了，而且是在前期低点附近，ATR 大概 2 块钱，这个位置有效吗？",
+      "expected_behavior": "应激活 03-kline-signal，识别晨星形态 → 检查位置（距前期低点 ≤ 1×ATR=2元 → 有效）→ 检查成交量 → 分级；输出位置有效性和信号强度",
+      "notes": "典型三根形态+ATR位置确认场景，含'晨星''ATR''位置有效吗'三个 trigger"
+    },
+    {
+      "id": "should-not-trigger-01",
+      "type": "should_not_trigger",
+      "prompt": "这只股票 PE 20 倍，ROE 18%，基本面好不好？值不值得买？",
+      "expected_behavior": "不应激活本 skill，因为这是基本面选股问题，不涉及 K线形态。应转 02-stock-screening",
+      "notes": "诱饵：选股问题，看似涉及股票但实际是基本面分析，不涉及 K线"
+    },
+    {
+      "id": "should-not-trigger-02",
+      "type": "should_not_trigger",
+      "prompt": "现在大盘是什么趋势？20 日线往上还是往下？该看多还是看空？",
+      "expected_behavior": "不应激活本 skill，因为这是趋势方向判断问题，不涉及具体 K线形态。应转 04-trend-key-level",
+      "notes": "诱饵：趋势问题，看似涉及'20日线'但实际是趋势判断，不涉及 K线形态识别"
+    },
+    {
+      "id": "edge-01",
+      "type": "edge_case",
+      "prompt": "这只股票涨停了，K线是一根大阳线，这个形态怎么解读？",
+      "expected_behavior": "边界判断：涨停板的 K线形态失真（A 股涨跌停影响），传统形态分析不适用。应提示用户涨停板形态失真，需结合封单量、换手率等特殊指标，不直接套用标准形态判断",
+      "notes": "边界：涨停板场景，触及作者盲点（A 股涨跌停板对 K线形态的影响）"
+    }
+  ],
+  "minimum_pass_rate": 0.8,
+  "notes": "至少 3 条 should_trigger + 2 条 should_not_trigger + 1 条 edge_case。全部 should_not_trigger 必须通过 (诱饵容错为 0)。"
+}

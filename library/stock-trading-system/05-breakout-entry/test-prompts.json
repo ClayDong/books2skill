@@ -1,0 +1,52 @@
+{
+  "skill": "05-breakout-entry",
+  "version": "0.1.0",
+  "source_book": "《海龟交易法则》柯蒂斯·费思、《股票大作手回忆录》利弗莫尔、《炒股的智慧》陈江挺",
+  "darwin_compatible": true,
+  "test_cases": [
+    {
+      "id": "should-trigger-01",
+      "type": "should_trigger",
+      "prompt": "贵州茅台今天收盘价1680，突破了20日最高价1650，成交量是5日均量的1.8倍，没涨停，能不能买？",
+      "expected_behavior": "应激活 05-breakout-entry，判定为✅入场信号（10日+20日突破+量价配合），输出入场价1680、首仓比例20%，并提示调用06-position-sizing计算股数",
+      "notes": "标准正面场景：价格突破+成交量放大+未涨停，三重确认齐全"
+    },
+    {
+      "id": "should-trigger-02",
+      "type": "should_trigger",
+      "prompt": "宁德时代今天涨停了，封单很大，突破20日高点，明天还能追吗？",
+      "expected_behavior": "应激活 05-breakout-entry，判定为⚠️涨停待次日，输出次日集合竞价策略（高开≤3%且未涨停可入场，高开>3%放弃）",
+      "notes": "涨停过滤场景：A股特色，涨停封死不追单"
+    },
+    {
+      "id": "should-trigger-03",
+      "type": "should_trigger",
+      "prompt": "这只股票今天突破10日新高了，但是成交量比平时还小，要不要进？",
+      "expected_behavior": "应激活 05-breakout-entry，判定为❌不入场，原因：缩量突破（量价背离），陈江挺买入要点要求量价配合",
+      "notes": "成交量确认场景：突破但缩量，判定为假突破"
+    },
+    {
+      "id": "should-not-trigger-01",
+      "type": "should_not_trigger",
+      "prompt": "我已经持有贵州茅台500股，现在浮盈15%，要不要加仓？",
+      "expected_behavior": "不应激活本skill，因为这是已持仓股票的加仓判断，应走06-position-sizing",
+      "notes": "诱饵：加仓≠入场，加仓走头寸规模层"
+    },
+    {
+      "id": "should-not-trigger-02",
+      "type": "should_not_trigger",
+      "prompt": "贵州茅台市盈率25倍，ROE 30%，现在估值合理吗，值得长期持有吗？",
+      "expected_behavior": "不应激活本skill，因为这是基本面估值判断，不涉及技术突破信号",
+      "notes": "诱饵：基本面选股，非技术突破入场"
+    },
+    {
+      "id": "edge-01",
+      "type": "edge_case",
+      "prompt": "这只股票今天涨幅9.5%，差一点涨停，突破20日高点，成交量放大1.6倍，能买吗？",
+      "expected_behavior": "应激活 05-breakout-entry，判定为✅可入场（未涨停=涨幅<9.9%），但提示接近涨停边界，建议限价单而非市价单，避免追高",
+      "notes": "边界：涨幅接近涨停但未封板，技术上可入场但需注意滑点风险"
+    }
+  ],
+  "minimum_pass_rate": 0.8,
+  "notes": "至少3条should_trigger+2条should_not_trigger+1条edge_case。should_not_trigger容错为0。"
+}

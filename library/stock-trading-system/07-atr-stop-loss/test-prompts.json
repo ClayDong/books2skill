@@ -1,0 +1,52 @@
+{
+  "skill": "07-atr-stop-loss",
+  "version": "0.1.0",
+  "source_book": "《海龟交易法则》柯蒂斯·费思",
+  "darwin_compatible": true,
+  "test_cases": [
+    {
+      "id": "should-trigger-01",
+      "type": "should_trigger",
+      "prompt": "我刚买入贵州茅台100股，入场价1680元，ATR是25元，止损价应该设多少？",
+      "expected_behavior": "应激活 07-atr-stop-loss，计算止损价=1680-2×25=1630元，止损金额=(1680-1630)×100=5000元，校验止损占比是否≤1%",
+      "notes": "标准正面场景：刚买入+ATR+入场价齐全，计算初始止损"
+    },
+    {
+      "id": "should-trigger-02",
+      "type": "should_trigger",
+      "prompt": "我已经持有宁德时代200股，成本180元，原止损170元。现在加仓100股，新入场价185元，最新ATR是5元，加仓后止损怎么调？",
+      "expected_behavior": "应激活 07-atr-stop-loss，计算新止损=max(170, 185-2×5)=max(170,175)=175元，止损上移至175元（止损只能上移不能下移）",
+      "notes": "加仓止损场景：max(原止损, 新入场价-2×ATR)修正公式"
+    },
+    {
+      "id": "should-trigger-03",
+      "type": "should_trigger",
+      "prompt": "我持有的股票今天跌停了，已经连续跌停2天了，卖不出去怎么办？",
+      "expected_behavior": "应激活 07-atr-stop-loss，输出跌停处理策略：连续跌停<3日→限价单挂跌停价排队，连续跌停≥3日→改市价单",
+      "notes": "跌停处理场景：A股特色，跌停排队卖出策略"
+    },
+    {
+      "id": "should-not-trigger-01",
+      "type": "should_not_trigger",
+      "prompt": "这只股票突破20日高点了，成交量也放大了，要不要买入？",
+      "expected_behavior": "不应激活本skill，因为这是入场判断，应走05-breakout-entry",
+      "notes": "诱饵：入场判断≠止损管理，入场走05"
+    },
+    {
+      "id": "should-not-trigger-02",
+      "type": "should_not_trigger",
+      "prompt": "我持有的股票已经浮盈30%了，什么时候该止盈卖出？",
+      "expected_behavior": "不应激活本skill，因为这是盈利出场判断，应走08-trend-exit",
+      "notes": "诱饵：止盈≠止损，盈利出场走08"
+    },
+    {
+      "id": "edge-01",
+      "type": "edge_case",
+      "prompt": "我今天刚买入的股票，买入后就开始跌，现在亏了3%，要不要止损？",
+      "expected_behavior": "应激活 07-atr-stop-loss，判定为T+1限制：买入当日无法止损，输出⚠️次日集合竞价9:25处理。同时计算止损价供次日参考",
+      "notes": "边界：T+1限制，买入当日无法止损，需次日处理"
+    }
+  ],
+  "minimum_pass_rate": 0.8,
+  "notes": "至少3条should_trigger+2条should_not_trigger+1条edge_case。should_not_trigger容错为0。"
+}

@@ -1,0 +1,52 @@
+{
+  "skill": "04-trend-key-level",
+  "version": "0.1.0",
+  "source_book": "《股市趋势技术分析》道氏（训练数据） + 《投资中最简单的事》邱国鹭",
+  "darwin_compatible": true,
+  "test_cases": [
+    {
+      "id": "should-trigger-01",
+      "type": "should_trigger",
+      "prompt": "这只股票最近高点一个比一个高，低点也一个比一个高，现在是什么趋势？",
+      "expected_behavior": "应激活 04-trend-key-level，用道氏定义判断为上升趋势（高点高于前高+低点高于前低）→ 检查 20 日线强度分级 → 输出趋势方向+强度+关键价位",
+      "notes": "典型趋势判断场景，含'高点''低点''什么趋势'三个 trigger，道氏定义明确"
+    },
+    {
+      "id": "should-trigger-02",
+      "type": "should_trigger",
+      "prompt": "现在价格在 20 日线上方，但 20 日线好像走平了，趋势强不强？还能持续多久？",
+      "expected_behavior": "应激活 04-trend-key-level，按强度分级判定为中趋势（价格>20日线但20日线走平）→ 输出等待建议和观察点",
+      "notes": "典型趋势强度场景，含'20日线''走平''趋势强不强'三个 trigger，触及中趋势分级"
+    },
+    {
+      "id": "should-trigger-03",
+      "type": "should_trigger",
+      "prompt": "最近出了利好政策，市场是不是到政策底了？后面会怎么走？现在处于什么周期？",
+      "expected_behavior": "应激活 04-trend-key-level，用邱国鹭四种周期定位（政策底→市场底→经济底→盈利底）→ 判断当前阶段 → 输出周期定位和配置建议",
+      "notes": "典型周期定位场景，含'政策底''周期''后面怎么走'三个 trigger，触及四种周期框架"
+    },
+    {
+      "id": "should-not-trigger-01",
+      "type": "should_not_trigger",
+      "prompt": "这只股票 PE 15 倍，PB 2 倍，估值贵不贵？行业格局怎么样？",
+      "expected_behavior": "不应激活本 skill，因为这是选股/估值问题，不涉及趋势方向。应转 02-stock-screening",
+      "notes": "诱饵：选股问题，看似涉及股票但实际是基本面分析，不涉及趋势"
+    },
+    {
+      "id": "should-not-trigger-02",
+      "type": "should_not_trigger",
+      "prompt": "今天收了一根锤子线，在支撑位附近，成交量放大了，是不是反转信号？",
+      "expected_behavior": "不应激活本 skill，因为这是 K线形态识别问题，不涉及长期趋势方向。应转 03-kline-signal",
+      "notes": "诱饵：K线问题，看似涉及'支撑位'但实际是短期形态分析，不涉及趋势判断"
+    },
+    {
+      "id": "edge-01",
+      "type": "edge_case",
+      "prompt": "价格在 20 日线下方，但 PE 历史分位只有 15%，估值很便宜，能不能买？",
+      "expected_behavior": "边界判断：弱趋势（价格<20日线）→ ❌ 禁止做多（禁忌红线），即使估值便宜（PE分位15%<30%低估）。趋势红线优先于价值锚。应明确告知用户趋势红线优先，建议等待趋势转强",
+      "notes": "边界：弱趋势 vs 低估值的冲突，触及禁忌红线（弱趋势禁止做多）和价值锚（低估）的矛盾"
+    }
+  ],
+  "minimum_pass_rate": 0.8,
+  "notes": "至少 3 条 should_trigger + 2 条 should_not_trigger + 1 条 edge_case。全部 should_not_trigger 必须通过 (诱饵容错为 0)。"
+}

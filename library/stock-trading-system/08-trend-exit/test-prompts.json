@@ -1,0 +1,52 @@
+{
+  "skill": "08-trend-exit",
+  "version": "0.1.0",
+  "source_book": "《炒股的智慧》陈江挺",
+  "darwin_compatible": true,
+  "test_cases": [
+    {
+      "id": "should-trigger-01",
+      "type": "should_trigger",
+      "prompt": "我持有贵州茅台100股，入场价1500元，现在价格1680元，浮盈12%，20日均线1650元，10日最低价1620元，该不该卖？",
+      "expected_behavior": "应激活 08-trend-exit，检查：未涨停→止损未触发→收盘价1680>10日最低1620→浮盈12%<20%不触发回撤保护→1680>20日均线1650→输出✅持有（趋势完好）",
+      "notes": "标准正面场景：浮盈但未触发任何出场信号，继续持有"
+    },
+    {
+      "id": "should-trigger-02",
+      "type": "should_trigger",
+      "prompt": "我持有的股票浮盈最高到过60%，现在回撤到42%了，要不要止盈？",
+      "expected_behavior": "应激活 08-trend-exit，检查：最高浮盈60%>50%，当前回撤=60%-42%=18%≥15%→输出❌清仓（浮盈回撤保护止盈）",
+      "notes": "浮盈回撤保护场景：浮盈>50%时回撤15%止盈"
+    },
+    {
+      "id": "should-trigger-03",
+      "type": "should_trigger",
+      "prompt": "我持有的股票今天涨停了，浮盈30%，要不要卖？",
+      "expected_behavior": "应激活 08-trend-exit，检查：涨停且封板→输出✅持有（涨停=多头强势，继续持有）",
+      "notes": "涨停不卖场景：A股特色，涨停继续持有"
+    },
+    {
+      "id": "should-not-trigger-01",
+      "type": "should_not_trigger",
+      "prompt": "我持有的股票亏了5%，止损价应该设在多少？",
+      "expected_behavior": "不应激活本skill，因为这是止损价计算，应走07-atr-stop-loss",
+      "notes": "诱饵：止损≠止盈，亏损出场走07"
+    },
+    {
+      "id": "should-not-trigger-02",
+      "type": "should_not_trigger",
+      "prompt": "这只股票突破20日高点了，成交量放大，要不要买入？",
+      "expected_behavior": "不应激活本skill，因为这是入场判断，应走05-breakout-entry",
+      "notes": "诱饵：入场判断≠出场判断，入场走05"
+    },
+    {
+      "id": "edge-01",
+      "type": "edge_case",
+      "prompt": "我持有的股票浮盈25%，最高浮盈到过28%，现在回撤到25%，回撤才3%，但收盘价跌破了10日最低价，该卖吗？",
+      "expected_behavior": "应激活 08-trend-exit，检查：浮盈25%>20%但回撤3%<10%不触发回撤保护→收盘价跌破10日最低价→输出⚠️减仓50%（10日低点出场信号优先于浮盈回撤保护）",
+      "notes": "边界：出场优先级冲突——10日低点信号触发但浮盈回撤未触发，按优先级走10日低点减仓"
+    }
+  ],
+  "minimum_pass_rate": 0.8,
+  "notes": "至少3条should_trigger+2条should_not_trigger+1条edge_case。should_not_trigger容错为0。"
+}

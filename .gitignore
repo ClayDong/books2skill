@@ -24,7 +24,16 @@ config.local.json
 
 # ===== 运行时生成数据 =====
 # 多书协同产出层（运行时生成，包含本地拆书数据）
-library/
+# 用 library/* 而非 library/，以便为 stock-trading-system 添加例外
+library/*
+!library/stock-trading-system/
+
+# 原始书籍 PDF（版权+体积，不上传）
+books_raw/
+
+# 文本提取产出（运行时数据，不上传）
+books_txt/
+books_txt_ocr/
 
 # 单书蒸馏产出（运行时生成，按需保留本地）
 # 注意：如果你想分享拆完的 skill packs，请放在独立仓库

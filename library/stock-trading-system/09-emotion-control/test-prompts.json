@@ -1,0 +1,52 @@
+{
+  "skill": "09-emotion-control",
+  "version": "0.1.0",
+  "source_book": "《交易心理分析》马克·道格拉斯 + 《炒股的智慧》陈江挺 + 《穷查理宝典》查理·芒格",
+  "darwin_compatible": true,
+  "test_cases": [
+    {
+      "id": "should-trigger-01",
+      "type": "should_trigger",
+      "prompt": "我今天亏了8000块，很不甘心，想加仓把这笔扳回来，你觉得现在加仓怎么样？",
+      "expected_behavior": "应激活 09-emotion-control，并检测到'被剥夺超级反应倾向'，输出🔴红色情绪状态，建议暂停交易24小时，不回答加仓建议",
+      "notes": "正面场景：典型亏损后急于扳平的语言信号，命中被剥夺超级反应偏差"
+    },
+    {
+      "id": "should-trigger-02",
+      "type": "should_trigger",
+      "prompt": "我最近连续赚了5笔，感觉终于找到交易的感觉了，准备下笔加大仓位干一票大的",
+      "expected_behavior": "应激活 09-emotion-control，并检测到'过度乐观倾向'，输出🟡黄色情绪状态，建议下笔仓位减半触发回撤保护",
+      "notes": "正面场景：连续盈利后过度自信，命中过度乐观偏差"
+    },
+    {
+      "id": "should-trigger-03",
+      "type": "should_trigger",
+      "prompt": "群里都在说这只票要翻倍，大家都在买，我不买怕踏空，你觉得我该跟吗？",
+      "expected_behavior": "应激活 09-emotion-control，并检测到'社会认同倾向'，要求独立验证信号来源，不直接回答该不该跟",
+      "notes": "正面场景：市场狂热时从众心理，命中社会认同偏差"
+    },
+    {
+      "id": "should-not-trigger-01",
+      "type": "should_not_trigger",
+      "prompt": "帮我看看这只股票的MACD金叉信号准不准，现在是不是买入时机？",
+      "expected_behavior": "不应激活本 skill，因为这是纯技术面分析问题，应走量化信号系统而非情绪控制",
+      "notes": "诱饵：技术面分析伪装成情绪问题，用户在问信号准确性不是情绪状态"
+    },
+    {
+      "id": "should-not-trigger-02",
+      "type": "should_not_trigger",
+      "prompt": "我有10万块本金，应该怎么分配仓位？每只股票买多少合适？",
+      "expected_behavior": "不应激活本 skill，因为这是仓位管理问题，应走仓位计算 skill，与情绪状态无关",
+      "notes": "诱饵：仓位计算问题，虽然涉及交易但不是情绪困扰"
+    },
+    {
+      "id": "edge-01",
+      "type": "edge_case",
+      "prompt": "我昨天亏了钱，今天复盘了一下觉得是我的止损位设得太紧了，想调整止损策略，你觉得呢？",
+      "expected_behavior": "边界判断：用户有亏损但有理性复盘行为，情绪相对稳定。应先做3问快速评估，若得分低则判定🟢绿色并建议调用 11-trade-review 做系统复盘，而非直接判定情绪失控",
+      "notes": "边界：亏损后但有理性分析，需要区分'情绪化操作'和'理性复盘调整'，不能一刀切标红"
+    }
+  ],
+  "minimum_pass_rate": 0.8,
+  "notes": "至少3条should_trigger+2条should_not_trigger+1条edge_case。should_not_trigger容错为0——技术面分析和仓位计算问题绝不能误激活情绪控制skill。"
+}

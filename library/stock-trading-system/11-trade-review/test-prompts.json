@@ -1,0 +1,52 @@
+{
+  "skill": "11-trade-review",
+  "version": "0.1.0",
+  "source_book": "《股票大作手回忆录》杰西·利弗莫尔 + 多书整合",
+  "darwin_compatible": true,
+  "test_cases": [
+    {
+      "id": "should-trigger-01",
+      "type": "should_trigger",
+      "prompt": "帮我复盘一下昨天那笔交易，我在20块买入某股，止损设在18块，结果跌到17.5割肉了，亏了2500，我哪里做错了？",
+      "expected_behavior": "应激活 11-trade-review，并做五维度分析（技术面/基本面/风控面/心理面/市场面），用利弗莫尔归因法分类为判断错误/执行错误/系统缺陷之一，输出改进措施",
+      "notes": "正面场景：典型单笔交易复盘需求，用户给出完整交易记录要求归因"
+    },
+    {
+      "id": "should-trigger-02",
+      "type": "should_trigger",
+      "prompt": "我最近5笔交易都亏了，帮我看看有什么共同问题，是不是我的系统有问题",
+      "expected_behavior": "应激活 11-trade-review，并做批量复盘+模式识别，检测重复错误模式，用利弗莫尔归因法判断是判断错误/执行错误/系统缺陷",
+      "notes": "正面场景：批量交易复盘+模式识别需求，需要跨交易找共同问题"
+    },
+    {
+      "id": "should-trigger-03",
+      "type": "should_trigger",
+      "prompt": "这笔交易赚了3000块，但我想确认一下是运气还是能力，帮我复盘一下",
+      "expected_behavior": "应激活 11-trade-review，并做五维度复盘确认盈利来源，区分'系统正期望带来的盈利'和'运气带来的盈利'，避免把运气当能力",
+      "notes": "正面场景：盈利也要复盘，利弗莫尔强调确认盈利来源"
+    },
+    {
+      "id": "should-not-trigger-01",
+      "type": "should_not_trigger",
+      "prompt": "我现在持仓亏了5000块，心里很慌，想马上加仓扳回来，你觉得怎么样？",
+      "expected_behavior": "不应激活本 skill，因为这是实时情绪化操作需求，应走 09-emotion-control 检测被剥夺超级反应倾向，复盘是事后行为",
+      "notes": "诱饵：交易中情绪困扰伪装成复盘需求，但用户在交易中不是事后复盘"
+    },
+    {
+      "id": "should-not-trigger-02",
+      "type": "should_not_trigger",
+      "prompt": "帮我算一下我的交易系统期望值是多少，胜率和盈亏比够不够",
+      "expected_behavior": "不应激活本 skill，因为这是系统整体期望值评估，应走 10-system-optimization 计算R乘数和期望值",
+      "notes": "诱饵：系统评估伪装成复盘，系统优化看整体统计，复盘看单笔归因"
+    },
+    {
+      "id": "edge-01",
+      "type": "edge_case",
+      "prompt": "我昨天做了一笔交易但没记入场价和止损价，只记得大概亏了2000块，能帮我复盘吗？",
+      "expected_behavior": "边界判断：交易记录不完整（缺入场价和止损价），应标⚠️待补充，要求用户补全数据后再做完整五维度复盘，但可基于已有信息做初步心理面和市场面分析",
+      "notes": "边界：数据不完整的边界场景，不能拒绝但必须标注信息不足"
+    }
+  ],
+  "minimum_pass_rate": 0.8,
+  "notes": "至少3条should_trigger+2条should_not_trigger+1条edge_case。should_not_trigger容错为0——实时情绪困扰和系统整体评估绝不能误激活复盘skill。"
+}

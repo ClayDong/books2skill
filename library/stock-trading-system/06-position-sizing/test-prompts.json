@@ -1,0 +1,52 @@
+{
+  "skill": "06-position-sizing",
+  "version": "0.1.0",
+  "source_book": "《海龟交易法则》柯蒂斯·费思、《通向财务自由之路》范·K·撒普",
+  "darwin_compatible": true,
+  "test_cases": [
+    {
+      "id": "should-trigger-01",
+      "type": "should_trigger",
+      "prompt": "我有50万资金，贵州茅台ATR是25元，当前价1680元，止损价1630元，能买多少股？",
+      "expected_behavior": "应激活 06-position-sizing，计算：风险金额=500000×1%=5000元，每股风险=2×25=50元，建议股数=5000/50=100股（向下取整到100股整数倍），仓位占比=100×1680/500000=33.6%，超25%上限，缩减至74股→向下取整到100股整数倍为0股，提示\"风险金额不足以买入最小单位100股\"，建议提高资金或降低止损距离",
+      "notes": "标准正面场景：总资金+ATR+入场价+止损价齐全，触发头寸计算"
+    },
+    {
+      "id": "should-trigger-02",
+      "type": "should_trigger",
+      "prompt": "我已经持有宁德时代200股，成本180元，现在想加仓，最新ATR是5元，当前价185元，加仓后总仓位多少？",
+      "expected_behavior": "应激活 06-position-sizing，计算加仓股数：风险金额=总资金×1%，每股风险=2×5=10元，建议加仓股数=风险金额/10。加仓后重新计算总仓位和总风险，校验≤80%和≤2%硬上限",
+      "notes": "加仓场景：已有持仓+加仓需求，需重新计算ATR和止损"
+    },
+    {
+      "id": "should-trigger-03",
+      "type": "should_trigger",
+      "prompt": "总资金100万，这只股票ATR只有2元，股价20元，能买多少股？",
+      "expected_behavior": "应激活 06-position-sizing，计算：风险金额=1000000×1%=10000元，每股风险=2×2=4元，建议股数=10000/4=2500股，仓位占比=2500×20/1000000=5%，未超限",
+      "notes": "低波动股票场景：ATR小，股数多但仓位占比低"
+    },
+    {
+      "id": "should-not-trigger-01",
+      "type": "should_not_trigger",
+      "prompt": "贵州茅台今天突破20日高点了，成交量也放大了，能买吗？",
+      "expected_behavior": "不应激活本skill，因为这是入场判断（要不要买），应走05-breakout-entry",
+      "notes": "诱饵：入场判断≠头寸计算，入场走05"
+    },
+    {
+      "id": "should-not-trigger-02",
+      "type": "should_not_trigger",
+      "prompt": "我持有的股票已经亏了5%，止损价应该设在多少？",
+      "expected_behavior": "不应激活本skill，因为这是止损价计算，应走07-atr-stop-loss",
+      "notes": "诱饵：止损价设定≠头寸计算，止损走07"
+    },
+    {
+      "id": "edge-01",
+      "type": "edge_case",
+      "prompt": "总资金50万，这只股票ATR是50元，股价500元，能买多少股？",
+      "expected_behavior": "应激活 06-position-sizing，计算：风险金额=5000元，每股风险=2×50=100元，建议股数=5000/100=50股，向下取整到100股整数倍为0股，提示\"风险金额不足以买入最小单位100股\"，建议提高资金或降低止损距离",
+      "notes": "边界：计算股数<100股最小单位，取整后风险超1%达2%硬上限"
+    }
+  ],
+  "minimum_pass_rate": 0.8,
+  "notes": "至少3条should_trigger+2条should_not_trigger+1条edge_case。should_not_trigger容错为0。"
+}
