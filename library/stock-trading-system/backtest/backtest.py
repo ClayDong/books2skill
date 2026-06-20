@@ -145,6 +145,10 @@ class BacktestEngine:
         if pd.isna(row['atr14']) or row['atr14'] <= 0:
             return False
 
+        # 5. 20-day MA filter (优化新增：收盘价>20日线才入场，减少逆势)
+        if not pd.isna(row.get('ma20')) and row['close'] < row['ma20']:
+            return False
+
         return True
 
     # ─────────────────────────────────────────────
@@ -235,23 +239,23 @@ class BacktestEngine:
             self._exit(code, close, date, 'stop_loss')
             return
 
-        # ── 2. 10-day low close (skill 08: 减仓50%) ──
-        if not pd.isna(row.get('low_10d')) and close < row['low_10d']:
-            self._reduce(code, close, date, '10d_low', 0.5)
+        # ── 2. 20-day low close (优化：10日→20日，减少假信号) ──
+        if not pd.isna(row.get('low_20d')) and close < row['low_20d']:
+            self._reduce(code, close, date, '20d_low', 0.5)
             return
 
-        # ── 3. Profit drawback protection (skill 08) ──
+        # ── 3. Profit drawback protection (skill 08, 优化v2：放宽阈值让利润奔跑) ──
         entry = pos['entry_price']
         highest = pos['highest_close']
         current_profit = (close - entry) / entry
         max_profit = (highest - entry) / entry
         drawback = max_profit - current_profit
 
-        if max_profit > 0.5 and drawback >= 0.15:
+        if max_profit > 0.5 and drawback >= 0.20:
             self._exit(code, close, date, 'profit_drawback_50%')
             return
-        if max_profit > 0.2 and drawback >= 0.10:
-            self._reduce(code, close, date, 'profit_drawback_20%', 0.5)
+        if max_profit > 0.3 and drawback >= 0.15:
+            self._reduce(code, close, date, 'profit_drawback_30%', 0.5)
             return
 
         # ── 4. 20-day MA breakdown (skill 08: 连续2日跌破才清仓) ──

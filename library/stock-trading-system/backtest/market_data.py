@@ -118,6 +118,7 @@ def _calc_indicators(df: pd.DataFrame) -> pd.DataFrame:
     df['high_10d'] = df['high'].rolling(10).max().shift(1)
     df['high_20d'] = df['high'].rolling(20).max().shift(1)
     df['low_10d'] = df['close'].rolling(10).min().shift(1)
+    df['low_20d'] = df['close'].rolling(20).min().shift(1)  # 优化后出场用
 
     # ── Volume ──
     df['vol_ma5'] = df['volume'].rolling(5).mean()
