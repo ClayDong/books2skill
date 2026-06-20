@@ -144,6 +144,23 @@ cangjie-skill/
 9. 每张决策卡片必须有冲突仲裁规则
 10. 召回为空时必须走兜底流程，不能幻觉编造
 
+### 变更影响清单（防文档漂移）
+
+**规则**：修改任何 SKILL.md 时，必须同步检查以下文件，确保参数/引用/描述一致：
+
+| 修改的文件 | 必须同步检查的文件 | 检查内容 |
+|---|---|---|
+| `XX-skill/SKILL.md` | `XX-skill/test-prompts.json` | 参数是否一致（如20日低点）、source_book是否一致 |
+| `XX-skill/SKILL.md` | `INDEX.md` | skill描述是否同步、引用图是否需要更新 |
+| `XX-skill/SKILL.md` | `SYSTEM_OVERVIEW.md` | 架构图是否需要更新、关键修复表是否需要更新 |
+| `XX-skill/SKILL.md` | `BOOK_OVERVIEW.md` | source_book/作者名是否一致、13 Skill架构表是否同步 |
+| `BOOK_OVERVIEW.md` | `INDEX.md` + `SYSTEM_OVERVIEW.md` | 书籍数量（X本）必须三文档一致 |
+| 任何接口参数变更 | `SYSTEM_OVERVIEW.md` 接口契约表 | 契约表必须先于实现更新 |
+
+**自动化校验**：`library/stock-trading-system/validate_system.py` 可自动检查上述大部分一致性。修改后运行 `python validate_system.py`，0错误才能提交。
+
+**三份核心文档一致性规则**：`BOOK_OVERVIEW.md` / `INDEX.md` / `SYSTEM_OVERVIEW.md` 的书籍数量、skill 列表、关键参数必须保持一致，任一更新时必须同步检查其他两份。
+
 ## 命名规范
 
 - 物理 slug（SKILL.md frontmatter name、test-prompts.json skill、书内 INDEX.md）：`<skill-slug>`（无前缀，v1.0 兼容，不变）

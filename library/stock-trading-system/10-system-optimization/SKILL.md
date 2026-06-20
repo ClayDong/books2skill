@@ -5,7 +5,7 @@ description: |
   不适用于：单笔交易的情绪评估（走 09-emotion-control）、事后复盘归因（走 11-trade-review）、心态调适（走 12-mindset-calibration）。
   交易成本固定参数：佣金万2.5（双边）+ 印花税千0.5（仅卖出）+ 滑点千1（双边），双边合计约千3.0。
   输出三类：✅可执行 / ❌不可执行 / ⚠️待补充。
-source_book: 《通向财务自由之路》范·K·撒普 等
+source_book: 《通向财务自由之路》范·K·撒普 + 《穷查理宝典》查理·芒格
 source_chapter: 多书整合（撒普R乘数系统 + 芒格多元思维模型/检查清单/逆向思维/lollapalooza效应）
 tags: [system-optimization, r-multiple, expectancy, checklist, inverse-thinking]
 related_skills: [09-emotion-control, 11-trade-review, 12-mindset-calibration]
