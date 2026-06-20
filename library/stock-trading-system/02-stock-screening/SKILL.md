@@ -6,8 +6,8 @@ description: |
   不适用于：纯仓位/风控问题（走 01-risk-control-baseline）、K线形态（走 03-kline-signal）、趋势方向（走 04-trend-key-level）。
   关键 trigger 信号：估值、PE、PB、ROE、行业格局、定价权、护城河、价值陷阱、成长陷阱、CANSLIM。
   前置条件：必须先跑 01-risk-control-baseline 通过。
-source_book: 《投资中最简单的事》邱国鹭 + 《笑傲股市》欧奈尔（训练数据）
-source_chapter: 选股三要素 / 投资三板斧 / CANSLIM
+source_book: 《投资中最简单的事》邱国鹭 + 《笑傲股市》欧奈尔
+source_chapter: 选股三要素 / 投资三板斧 / CANSLIM（OCR原文已验证）
 tags: [选股, 估值, 行业格局, 定价权, 基本面, CANSLIM, 陷阱排查]
 related_skills: [01-risk-control-baseline, 03-kline-signal, 04-trend-key-level, 05-breakout-entry]
 ---
@@ -17,12 +17,12 @@ related_skills: [01-risk-control-baseline, 03-kline-signal, 04-trend-key-level, 
 ## R — 原文 (Reading)
 
 > 选股三要素：估值（最易把握）> 品质（定价权）> 时机（淡化）。投资三板斧：波特五力看议价权、杜邦分析看盈利模式、估值分析看贵不贵。行业格局四等级：月朗星稀 > 一超多强 > 两分天下 > 百花齐放。
->
+
 > — 邱国鹭，《投资中最简单的事》（选股章节）
 
-> CANSLIM：C 当季 EPS ≥ 25%、A 年度 EPS ≥ 25%、N 新产品/新高、S 供需、L 龙头、I 机构持仓、M 市场方向。
->
-> — 欧奈尔，《笑傲股市》（CANSLIM 章节，训练数据）
+> "CAN SLIM法则：C=当季每股收益、A=每股收益年度增长、N=新产品/新管理层/股价新高、S=供给与需求、L=领涨股还是滞价股、I=机构投资者、M=市场走向。"
+
+> — 欧奈尔，《笑傲股市》CANSLIM章节（OCR原文，page 234-248）
 
 ---
 

@@ -1,7 +1,7 @@
 {
   "skill": "02-stock-screening",
   "version": "0.1.0",
-  "source_book": "《投资中最简单的事》邱国鹭 + 《笑傲股市》欧奈尔（训练数据）",
+  "source_book": "《投资中最简单的事》邱国鹭 + 《笑傲股市》欧奈尔（OCR原文已验证）",
   "darwin_compatible": true,
   "test_cases": [
     {

@@ -5,7 +5,7 @@ description: |
   五维度复盘：技术面、基本面、风控面、心理面、市场面。利弗莫尔归因法区分三类错误：判断错误、执行错误、系统缺陷。
   不适用于：系统整体期望值评估（走 10-system-optimization）、情绪实时检测（走 09-emotion-control）、心态调适（走 12-mindset-calibration）。
   输出三类：✅可执行 / ❌不可执行 / ⚠️待补充。
-source_book: 《股票大作手回忆录》杰西·利弗莫尔 等
+source_book: 《股票大作手回忆录》埃德温·勒菲弗 等
 source_chapter: 多书整合（利弗莫尔交易日志+归因法 + 五维度复盘框架）
 tags: [trade-review, attribution, five-dimension, pattern-recognition, journaling]
 related_skills: [09-emotion-control, 10-system-optimization, 12-mindset-calibration]

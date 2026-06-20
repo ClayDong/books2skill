@@ -6,8 +6,8 @@ description: |
   不适用于：纯基本面选股（走 02-stock-screening）、纯趋势方向（走 04-trend-key-level）、仓位/风控（走 01-risk-control-baseline）。
   关键 trigger 信号：K线、蜡烛图、形态、锤子线、吞没、晨星、乌云盖顶、反转信号、成交量、ATR。
   前置条件：必须先跑 01-risk-control-baseline 通过。
-source_book: 《日本蜡烛图技术》尼森（训练数据）
-source_chapter: 反转形态 / 持续形态 / 位置确认
+source_book: 《日本蜡烛图技术》史蒂夫·尼森
+source_chapter: 第4章 反转形态 / 位置确认（OCR原文已验证）
 tags: [K线, 蜡烛图, 形态识别, 反转信号, 成交量, ATR, 信号分级]
 related_skills: [01-risk-control-baseline, 02-stock-screening, 04-trend-key-level, 05-breakout-entry]
 ---
@@ -16,9 +16,9 @@ related_skills: [01-risk-control-baseline, 02-stock-screening, 04-trend-key-leve
 
 ## R — 原文 (Reading)
 
-> 蜡烛图的核心不是形态本身，而是形态出现的位置。同样的锤子线，在关键支撑位是反转信号，在下跌中继只是停顿。必须配合成交量确认——无量形态不可信。
->
-> — 尼森，《日本蜡烛图技术》（位置确认章节，训练数据复述）
+> "它们的下影线较长，而实体较小，并且在其全天价格区间里，实体处在接近顶端的位置上……具体情况要由它们在趋势中所处的位置来决定。只要它出现在下降趋势中，那么它就是下降趋势即将结束的信号。"
+
+> — 尼森，《日本蜡烛图技术》第4章（OCR原文，page 1463-1468）
 
 ---
 
@@ -198,6 +198,6 @@ K线形态是"语言"，位置和成交量是"语境"——脱离语境的形态
 
 ## 审计信息
 
-- **验证通过**: V1 ✓（训练数据佐证）/ V2 ✓（能回答"这个K线什么意思"）/ V3 ✓（ATR 量化位置确认）
+- **验证通过**: V1 ✓（OCR原文佐证）/ V2 ✓（能回答"这个K线什么意思"）/ V3 ✓（ATR 量化位置确认）
 - **测试通过率**: 待阶段 4 验证
 - **蒸馏时间**: 2026-06-19

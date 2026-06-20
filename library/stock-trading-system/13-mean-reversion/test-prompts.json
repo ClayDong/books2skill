@@ -1,7 +1,7 @@
 {
   "skill": "13-mean-reversion",
   "version": "0.1.0",
-  "source_book": "《通向财务自由之路》范·K·撒普、《股市趋势技术分析》罗伯特·D·爱德华兹",
+  "source_book": "《通向财务自由之路》范·K·撒普",
   "darwin_compatible": true,
   "test_cases": [
     {
@@ -38,8 +38,15 @@
       "prompt": "帮我算仓位该多重？",
       "expected_behavior": "不应激活本skill，因为这是头寸规模计算，应走 06-position-sizing",
       "notes": "诱饵：仓位计算≠入场判断，走06"
+    },
+    {
+      "id": "edge-01",
+      "type": "edge_case",
+      "prompt": "这只股票RSI=25，布林带跌破下轨了，但大盘波动率分位50%（中性区间），能不能抄底？",
+      "expected_behavior": "应激活 13-mean-reversion，识别超卖信号（RSI<30+布林带破下轨），但市场状态判定为中性区间（40%≤分位≤60%）→ ⚠️谨慎使用，建议降低仓位至首仓20%，需进一步采集成交量确认",
+      "notes": "边界：中性区间（40%≤波动率分位≤60%）的场景，触及市场状态判断的灰色地带"
     }
   ],
   "minimum_pass_rate": 0.8,
-  "notes": "至少3条should_trigger+2条should_not_trigger。should_not_trigger容错为0。"
+  "notes": "至少3条should_trigger+2条should_not_trigger+1条edge_case。should_not_trigger容错为0。"
 }

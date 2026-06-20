@@ -1,7 +1,7 @@
 {
   "skill": "04-trend-key-level",
   "version": "0.1.0",
-  "source_book": "《股市趋势技术分析》道氏（训练数据） + 《投资中最简单的事》邱国鹭",
+  "source_book": "《股市趋势技术分析》爱德华兹（OCR原文已验证） + 《投资中最简单的事》邱国鹭",
   "darwin_compatible": true,
   "test_cases": [
     {

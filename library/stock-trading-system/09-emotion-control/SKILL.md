@@ -5,8 +5,8 @@ description: |
   关键 trigger 信号：用户提到亏损后情绪化操作、连续盈利后过度自信、市场狂热时从众、压力下强行交易、急于决策跳过分析。
   不适用于：纯技术面分析、仓位计算、选股逻辑、趋势判断（这些走量化系统 skill）。
   输出三类：✅可执行 / ❌不可执行 / ⚠️待补充。
-source_book: 《交易心理分析》马克·道格拉斯 等
-source_chapter: 多书整合（道格拉斯概率思维 + 陈江挺三障碍四阶段 + 芒格25心理偏误）
+source_book: 《交易心理分析》马克·道格拉斯、《炒股的智慧》陈江挺、《穷查理宝典》芒格
+source_chapter: 多书整合（道格拉斯概率思维 OCR原文已验证 + 陈江挺三障碍四阶段 + 芒格25心理偏误）
 tags: [emotion-control, cognitive-bias, trading-psychology, probability-thinking]
 related_skills: [10-system-optimization, 11-trade-review, 12-mindset-calibration]
 ---
@@ -15,12 +15,12 @@ related_skills: [10-system-optimization, 11-trade-review, 12-mindset-calibration
 
 ## R — 原文 (Reading)
 
-> "优秀的交易者不预测市场，他们只管理概率。每笔交易只是样本空间中的一个随机事件，不是对你个人判断力的评判。"
->
-> — 马克·道格拉斯，《交易心理分析》
+> "交易的冷酷现实是每笔交易的结果都不确定，除非你学会彻底接受结果不确定的可能性，否则你会有意或无意地避免你定义为痛苦的可能性。交易者学会根据概率思考后，会对自己的整体成功很有信心。"
+
+> — 马克·道格拉斯，《交易心理分析》（OCR原文，page 127-131）
 
 > "炒股的三个心理障碍是恐惧、贪婪和希望。恐惧让你该买不敢买，贪婪让你该卖不肯卖，希望让你该止损不止损。"
->
+
 > — 陈江挺，《炒股的智慧》
 
 ---

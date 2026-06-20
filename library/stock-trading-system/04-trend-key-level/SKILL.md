@@ -6,7 +6,7 @@ description: |
   不适用于：纯选股（走 02-stock-screening）、纯K线形态（走 03-kline-signal）、仓位/风控（走 01-risk-control-baseline）。
   关键 trigger 信号：趋势、支撑、阻力、20日线、60日线、周期、杠杆轮动、道氏、价值锚。
   前置条件：必须先跑 01-risk-control-baseline 通过。
-source_book: 《股市趋势技术分析》道氏（训练数据） + 《投资中最简单的事》邱国鹭
+source_book: 《股市趋势技术分析》爱德华兹（OCR原文已验证） + 《投资中最简单的事》邱国鹭
 source_chapter: 道氏理论 / 四种周期 / 三种杠杆
 tags: [趋势, 支撑阻力, 道氏理论, 周期定位, 杠杆轮动, 价值锚, 20日线]
 related_skills: [01-risk-control-baseline, 02-stock-screening, 03-kline-signal, 05-breakout-entry]
@@ -18,7 +18,7 @@ related_skills: [01-risk-control-baseline, 02-stock-screening, 03-kline-signal, 
 
 > 趋势的定义：高点高于前高、低点高于前低 = 上升趋势；反之 = 下降趋势。趋势分三级：主要趋势（数月-数年）、次要趋势（数周-数月）、短期波动（数日-数周）。
 >
-> — 道氏，《股市趋势技术分析》（道氏理论章节，训练数据复述）
+> — 爱德华兹，《股市趋势技术分析》道氏理论章节（OCR原文）
 
 > 四种周期：政策底 → 市场底 → 经济底 → 盈利底。三种杠杆轮动：高财务杠杆（金融地产）→ 高运营杠杆（周期股）→ 高估值杠杆（概念股）。
 >
@@ -216,6 +216,6 @@ related_skills: [01-risk-control-baseline, 02-stock-screening, 03-kline-signal, 
 
 ## 审计信息
 
-- **验证通过**: V1 ✓（两本书独立佐证）/ V2 ✓（能回答"现在什么趋势"）/ V3 ✓（三级强度量化明确）
+- **验证通过**: V1 ✓（OCR原文佐证）/ V2 ✓（能回答"现在什么趋势"）/ V3 ✓（三级强度量化明确）
 - **测试通过率**: 待阶段 4 验证
 - **蒸馏时间**: 2026-06-19

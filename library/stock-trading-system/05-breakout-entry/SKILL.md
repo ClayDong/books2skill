@@ -6,7 +6,7 @@ description: |
   不适用于：纯基本面选股、定投决策、已持仓股票的加减仓（走 06-position-sizing）、止损/出场判断（走 07/08）。
   前置校验：交易操作类 skill，调用前必须先跑 01-risk-control-baseline 确认风险参数。
 source_book: 《海龟交易法则》柯蒂斯·费思、《股票大作手回忆录》埃德温·勒菲弗、《炒股的智慧》陈江挺
-source_chapter: 海龟交易法则第4-5章 / 股票大作手回忆录关键点法 / 炒股的智慧买入八要点
+source_chapter: 海龟交易法则第4章突破系统（OCR原文已验证）/ 股票大作手回忆录关键点法 / 炒股的智慧买入八要点
 tags: [breakout, entry, trend-following, A-share, volume-confirmation]
 related_skills: [01-risk-control-baseline, 06-position-sizing, 07-atr-stop-loss]
 ---
@@ -15,16 +15,16 @@ related_skills: [01-risk-control-baseline, 06-position-sizing, 07-atr-stop-loss]
 
 ## R — 原文 (Reading)
 
-> "理查德·丹尼斯说：价格突破过去20天的高点时买入（系统1），突破55天高点时买入（系统2）。突破意味着趋势可能启动。"
->
-> — 柯蒂斯·费思，《海龟交易法则》第4章
+> "系统1：以20日突破为基础的短期系统。系统2：以55日突破为基础的长期系统。突破是指价格超越了过去一定时期内的最高点或最低点。海龟们总是在突破发生时立即入市交易。"
+
+> — 柯蒂斯·费思，《海龟交易法则》第4章（OCR原文，page 6614-6619）
 
 > "关键点就是那些经历长期横盘后，价格突破整数关口或历史阻力位的时刻。在关键点买入，胜率最高。"
->
+
 > — 埃德温·勒菲弗（记录利弗莫尔），《股票大作手回忆录》
 
 > "买入要点之一：突破时必须要有成交量的配合，没有量的突破是假突破。突破前要有蓄势过程。"
->
+
 > — 陈江挺，《炒股的智慧》
 
 ---
@@ -82,6 +82,7 @@ related_skills: [01-risk-control-baseline, 06-position-sizing, 07-atr-stop-loss]
 
 - ✅ 入场信号 → 调用 `06-position-sizing` 计算具体股数
 - ⚠️ 涨停待次日 → 次日集合竞价（9:25）处理
+- ❌ 震荡市不适用 → 走 `13-mean-reversion`（大盘波动率分位<40%）
 - ❌ 不入场 → 等待或重新选股（调用 `02-stock-screening`）
 
 ---
@@ -95,7 +96,11 @@ related_skills: [01-risk-control-baseline, 06-position-sizing, 07-atr-stop-loss]
    - 完成标准：总资金、单笔风险上限（1%）、最大持仓限制已确认
    - 判停条件：若未跑 01-risk-control-baseline，则提示用户先运行，跳到结束
    - 大盘环境校验：指数>60日线 → ✅可入场；指数<60日线 → ❌空仓等待
-   - 若已通过 02-stock-screening 选股，则大盘过滤已在 02 完成，无需重复校验
+   - 市场状态校验（与13-mean-reversion互斥，使用相同的大盘波动率分位指标）：
+     - 大盘20日波动率分位 < 40% → 震荡市 → ❌不适用本skill，提示用户走 13-mean-reversion
+     - 大盘20日波动率分位 > 60% → 趋势市 → ✅适用本skill，继续
+     - 40% ≤ 分位 ≤ 60% → 中性区间 → ⚠️谨慎使用，可继续但建议降低仓位至首仓15%
+   - 若已通过 02-stock-screening 选股，则大盘60日线过滤已在 02 完成，无需重复；但市场状态校验（波动率分位）仍需执行，因02未做此校验
 
 2. **输入采集**
    - 股票代码
@@ -153,7 +158,7 @@ related_skills: [01-risk-control-baseline, 06-position-sizing, 07-atr-stop-loss]
    - 常规市场：ATR(14日)
    - 高波动市场（当日 ATR > 20日平均 ATR 的 1.5 倍）：改用 ATR(10日)，更快反映波动变化
    - 低波动市场（当日 ATR < 20日平均 ATR 的 0.7 倍）：改用 ATR(20日)，过滤噪音
-   - 用途：本 skill 输出的波动率参数供 07-atr-stop-loss 计算止损时使用
+   - 用途：本 skill 输出的波动率参数供 06-position-sizing 计算股数和 07-atr-stop-loss 计算止损时使用
 
 ---
 

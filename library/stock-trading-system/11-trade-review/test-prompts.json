@@ -1,7 +1,7 @@
 {
   "skill": "11-trade-review",
   "version": "0.1.0",
-  "source_book": "《股票大作手回忆录》杰西·利弗莫尔 + 多书整合",
+  "source_book": "《股票大作手回忆录》埃德温·勒菲弗 + 多书整合",
   "darwin_compatible": true,
   "test_cases": [
     {

@@ -1,7 +1,7 @@
 {
   "skill": "05-breakout-entry",
   "version": "0.1.0",
-  "source_book": "《海龟交易法则》柯蒂斯·费思、《股票大作手回忆录》利弗莫尔、《炒股的智慧》陈江挺",
+  "source_book": "《海龟交易法则》柯蒂斯·费思、《股票大作手回忆录》埃德温·勒菲弗、《炒股的智慧》陈江挺",
   "darwin_compatible": true,
   "test_cases": [
     {
