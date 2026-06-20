@@ -8,7 +8,7 @@ description: |
 source_book: 《海龟交易法则》柯蒂斯·费思、《通向财务自由之路》范·K·撒普
 source_chapter: 海龟交易法则第6-7章头寸规模 / 通向财务自由之路第12章R乘数
 tags: [position-sizing, risk-management, ATR, R-multiple, capital-allocation]
-related_skills: [01-risk-control-baseline, 05-breakout-entry, 07-atr-stop-loss]
+related_skills: [01-risk-control-baseline, 05-breakout-entry, 07-atr-stop-loss, 08-trend-exit, 13-mean-reversion]
 ---
 
 # 头寸规模层 — Position Sizing
@@ -17,11 +17,11 @@ related_skills: [01-risk-control-baseline, 05-breakout-entry, 07-atr-stop-loss]
 
 > "海龟头寸规模单位 =（账户资金 × 1%）/（ATR × 乘数）。其中ATR是20日真实波幅均值，乘数代表每单位波动的美元价值。这样无论市场波动大小，每个头寸的风险都恒定。"
 >
-> — 柯蒂斯·费思，《海龟交易法则》第6章
+> — 柯蒂斯·费思，《海龟交易法则》第6章（OCR原文，page 5230-5260）
 
 > "R代表初始风险，等于入场价减去止损价。如果你冒1%的风险买入，R就是账户的1%。头寸规模应该基于R来计算，而不是固定股数。"
 >
-> — 范·K·撒普，《通向财务自由之路》第12章
+> — 范·K·撒普，《通向财务自由之路》第12章（OCR原文，page 4100-4130）
 
 ---
 

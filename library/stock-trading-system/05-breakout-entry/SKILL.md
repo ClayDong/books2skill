@@ -8,7 +8,7 @@ description: |
 source_book: 《海龟交易法则》柯蒂斯·费思、《股票大作手回忆录》埃德温·勒菲弗、《炒股的智慧》陈江挺
 source_chapter: 海龟交易法则第4章突破系统（OCR原文已验证）/ 股票大作手回忆录关键点法 / 炒股的智慧买入八要点
 tags: [breakout, entry, trend-following, A-share, volume-confirmation]
-related_skills: [01-risk-control-baseline, 06-position-sizing, 07-atr-stop-loss]
+related_skills: [01-risk-control-baseline, 02-stock-screening, 03-kline-signal, 04-trend-key-level, 06-position-sizing, 07-atr-stop-loss, 08-trend-exit, 13-mean-reversion]
 ---
 
 # 突破入场层 — Breakout Entry
