@@ -3,7 +3,7 @@ name: 08-trend-exit
 description: |
   当用户需要判断"该不该卖""什么时候止盈""趋势还在不在""浮盈回撤多少该走"时激活。
   关键 trigger 信号：用户提到"卖出""止盈""清仓""减仓""趋势破坏""回撤保护""浮盈"等词汇，且涉及持仓的出场判断。
-  不适用于：止损判断（走 07-atr-stop-loss，本 skill 只管盈利出场）、入场判断（走 05-breakout-entry）、头寸计算（走 06-position-sizing）。
+  不适用于：止损判断（走 07-atr-stop-loss，本 skill 只管盈利出场）、入场判断（走 05-breakout-entry）、头寸计算（走 06-position-sizing）、均值回归策略的出场（走 13-mean-reversion，该skill自带出场规则）。清仓指止盈清仓（盈利出场）；止损清仓（亏损出场）走 07。
   前置校验：交易操作类 skill，调用前必须先跑 01-risk-control-baseline 确认风险参数。
 source_book: 《炒股的智慧》陈江挺
 source_chapter: 炒股的智慧卖出六技术要领 / 截短亏损让利润奔跑

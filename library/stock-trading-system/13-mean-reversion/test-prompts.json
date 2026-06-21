@@ -48,5 +48,5 @@
     }
   ],
   "minimum_pass_rate": 0.8,
-  "notes": "至少3条should_trigger+2条should_not_trigger+1条edge_case。should_not_trigger容错为0。"
+  "notes": "至少3条should_trigger+2条should_not_trigger+1条edge_case。should_not_trigger容错为0。expected_behavior假设前置校验（01风险参数/大盘波动率分位市场状态判断）已通过。"
 }
