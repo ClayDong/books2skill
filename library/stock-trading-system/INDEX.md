@@ -54,12 +54,11 @@
 ```mermaid
 graph TD
     S01[01-risk-control-baseline] -->|前置校验| S02[02-stock-screening]
-    S01 -->|前置校验| S03[03-kline-signal]
-    S01 -->|前置校验| S04[04-trend-key-level]
     S01 -->|前置校验| S05[05-breakout-entry]
     S01 -->|前置校验| S06[06-position-sizing]
     S01 -->|前置校验| S07[07-atr-stop-loss]
     S01 -->|前置校验| S08[08-trend-exit]
+    S01 -->|前置校验| S13[13-mean-reversion]
 
     S02 -->|选股结果| S05
     S03 -->|K线信号| S05
@@ -75,12 +74,15 @@ graph TD
     S09[09-emotion-control] -.->|情绪校验| S05
     S09 -.->|情绪校验| S07
     S09 -.->|情绪校验| S08
+    S09 -.->|复盘| S11
+    S09 -.->|心态校准| S12[12-mindset-calibration]
 
     S10[10-system-optimization] -->|系统评价| S11
     S11 -->|优化建议| S10
 
-    S12[12-mindset-calibration] -.->|心态校准| S09
+    S12 -.->|心态校准| S09
     S12 -.->|心态校准| S10
+    S12 -.->|心态校准| S11
 
     S13[13-mean-reversion] -->|震荡市入场后计算头寸| S06
     S05 -.->|趋势市互斥| S13
