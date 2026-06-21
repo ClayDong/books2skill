@@ -149,6 +149,13 @@ class BacktestEngine:
         if not pd.isna(row.get('ma20')) and row['close'] < row['ma20']:
             return False
 
+        # 6. ADX filter (辅助判据：只过滤极端无趋势，避免误杀盈利交易)
+        # ADX>25=强趋势，ADX<20=无趋势，20-25=模糊区
+        # 回测验证：ADX<20硬过滤导致年化5.18%→4.05%（-22%），故调整为ADX<15才拒绝
+        # ADX<15=极端无趋势（震荡市假突破概率极高），15-25=模糊区（允许入场），>25=强趋势
+        if not pd.isna(row.get('adx14')) and row['adx14'] < 15:
+            return False  # ADX<15，极端无趋势，假突破概率极高
+
         return True
 
     # ─────────────────────────────────────────────

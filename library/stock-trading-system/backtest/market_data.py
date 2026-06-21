@@ -153,7 +153,62 @@ def _calc_indicators(df: pd.DataFrame) -> pd.DataFrame:
     # ── ATR as % of price ──
     df['atr_pct'] = df['atr14'] / df['close'] * 100
 
+    # ── ADX (14-day, Average Directional Index) ──
+    # ADX>25 = trend exists, ADX<20 = no trend
+    df['adx14'] = _calc_adx(df, period=14)
+
     return df
+
+
+def _calc_adx(df: pd.DataFrame, period: int = 14) -> pd.Series:
+    """Calculate ADX (Average Directional Index).
+    ADX measures trend strength (not direction).
+    ADX>25: strong trend, ADX<20: no trend/ranging.
+    """
+    high = df['high']
+    low = df['low']
+    close = df['close']
+
+    # +DM / -DM (keep as Series with same index as df)
+    up_move = high - high.shift(1)
+    down_move = low.shift(1) - low
+    plus_dm = pd.Series(
+        np.where((up_move > down_move) & (up_move > 0), up_move, 0),
+        index=df.index
+    )
+    minus_dm = pd.Series(
+        np.where((down_move > up_move) & (down_move > 0), down_move, 0),
+        index=df.index
+    )
+
+    # TR (already calculated as df['tr'] if available, else calc)
+    if 'tr' in df.columns:
+        tr = df['tr']
+    else:
+        prev_close = close.shift(1)
+        tr = pd.Series(
+            np.maximum(
+                high - low,
+                np.maximum(abs(high - prev_close), abs(low - prev_close))
+            ),
+            index=df.index
+        )
+
+    # Smoothed TR, +DM, -DM (Wilder's smoothing)
+    tr_s = tr.rolling(period).mean()
+    plus_dm_s = plus_dm.rolling(period).mean()
+    minus_dm_s = minus_dm.rolling(period).mean()
+
+    # +DI / -DI
+    plus_di = 100 * plus_dm_s / tr_s.replace(0, np.nan)
+    minus_di = 100 * minus_dm_s / tr_s.replace(0, np.nan)
+
+    # DX
+    dx = 100 * abs(plus_di - minus_di) / (plus_di + minus_di).replace(0, np.nan)
+
+    # ADX = smoothed DX
+    adx = dx.rolling(period).mean()
+    return adx
 
 
 def get_stock_list_by_industry() -> dict:
