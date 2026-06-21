@@ -8,7 +8,7 @@ description: |
 source_book: 《炒股的智慧》陈江挺
 source_chapter: 炒股的智慧卖出六技术要领 / 截短亏损让利润奔跑
 tags: [exit, trend-following, profit-protection, trailing-stop, A-share]
-related_skills: [01-risk-control-baseline, 05-breakout-entry, 06-position-sizing, 07-atr-stop-loss]
+related_skills: [01-risk-control-baseline, 05-breakout-entry, 06-position-sizing, 07-atr-stop-loss, 09-emotion-control]
 ---
 
 # 趋势出场层 — Trend Exit
@@ -39,7 +39,7 @@ related_skills: [01-risk-control-baseline, 05-breakout-entry, 06-position-sizing
    - （5年回测验证：原20%/10%阈值偏紧，盈亏比仅1.33；放宽后盈亏比1.64，让利润充分奔跑）
 4. **趋势破坏**：连续2日收盘价跌破20日均线 → 清仓
 
-**冲突仲裁规则**：若同时触发减仓信号和清仓信号，取更保守的操作（清仓）。
+**冲突仲裁规则**：若同时触发减仓信号和清仓信号，取更保守的操作（清仓）。所有减仓比例均以当前持仓为基数（减仓后更新持仓数量，后续步骤基于新持仓计算）。
 
 **A股特色**：
 - 涨停不卖（继续持有，涨停=多头强势）
@@ -123,7 +123,7 @@ related_skills: [01-risk-control-baseline, 05-breakout-entry, 06-position-sizing
    - 账户级回撤校验（前置）：
      - 若账户回撤≥20%→输出❌清仓冷静（触发01回撤熔断）
      - 若15%≤回撤<20%→输出⚠️强制减仓至半仓
-   - 若涨停且封板 → 输出 ✅持有（涨停=多头强势，继续持有）
+   - 若涨停且封板 → 输出 ✅持有（涨停=多头强势，继续持有）；**次日处理**：若次日开板且仍触发步骤5-7信号，补执行出场；若继续涨停则继续持有
    - 若跌停且封板 → 输出 ⚠️跌停排队卖（限价单挂跌停价，连续≥3日改市价单）
    - 连续跌停≥3日→触发账户级回撤校验（委托01）：若回撤≥20%→清仓冷静；若回撤<20%→继续排队+标记实际风险敞口（按跌停价估算）
    - 判停条件：若黑天鹅熔断触发清仓、涨停或跌停排队，直接输出对应信号，跳到步骤8

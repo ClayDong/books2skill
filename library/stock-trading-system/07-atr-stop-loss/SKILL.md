@@ -8,7 +8,7 @@ description: |
 source_book: 《海龟交易法则》柯蒂斯·费思
 source_chapter: 海龟交易法则第7章止损与退出（OCR原文已验证）
 tags: [stop-loss, ATR, risk-control, A-share, limit-down]
-related_skills: [01-risk-control-baseline, 05-breakout-entry, 06-position-sizing, 08-trend-exit]
+related_skills: [01-risk-control-baseline, 05-breakout-entry, 06-position-sizing, 08-trend-exit, 09-emotion-control]
 ---
 
 # ATR止损层 — ATR Stop Loss

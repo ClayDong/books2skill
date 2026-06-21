@@ -8,7 +8,7 @@ description: |
 source_book: 《交易心理分析》马克·道格拉斯、《炒股的智慧》陈江挺、《穷查理宝典》芒格
 source_chapter: 多书整合（道格拉斯概率思维 OCR原文已验证 + 陈江挺三障碍四阶段 + 芒格25心理偏误）
 tags: [emotion-control, cognitive-bias, trading-psychology, probability-thinking]
-related_skills: [10-system-optimization, 11-trade-review, 12-mindset-calibration]
+related_skills: [01-risk-control-baseline, 05-breakout-entry, 07-atr-stop-loss, 08-trend-exit, 10-system-optimization, 11-trade-review, 12-mindset-calibration]
 ---
 
 # 情绪控制层 — 交易心理防火墙

@@ -9,7 +9,7 @@ description: |
 source_book: 《炒股的智慧》陈江挺 + 《巴菲特寫給股東的信》巴菲特 + 《投资中最简单的事》邱国鹭
 source_chapter: 资金管理 / 安全边际 / 风险分类
 tags: [风控, 仓位管理, 回撤保护, 安全边际, 杠杆禁令, 前置校验]
-related_skills: [02-stock-screening, 03-kline-signal, 04-trend-key-level, 05-breakout-entry, 06-position-sizing, 07-atr-stop-loss, 08-trend-exit, 13-mean-reversion]
+related_skills: [02-stock-screening, 03-kline-signal, 04-trend-key-level, 05-breakout-entry, 06-position-sizing, 07-atr-stop-loss, 08-trend-exit, 09-emotion-control, 13-mean-reversion]
 ---
 
 # 风控基础层 — 交易前置校验与账户级保护
