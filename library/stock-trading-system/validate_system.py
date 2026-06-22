@@ -215,8 +215,8 @@ def check_references():
                 err("引用完整性", "INDEX.md", f"mermaid图引用了不存在的skill: {node}")
 
     # 检查13自成闭环：13的SKILL.md说不委托07/08，但INDEX引用图不应有S13→S07/S08
-    if "S13 -->|" in graph and ("S07" in graph or "S08" in graph):
-        # 提取S13的出边
+    if mermaid_match and "S13 -->|" in mermaid_match.group(1):
+        graph = mermaid_match.group(1)
         s13_edges = re.findall(r'S13\s*-->\|([^|]+)\|\s*S(\d+)', graph)
         for edge_label, target_num in s13_edges:
             if target_num in ["07", "08"]:

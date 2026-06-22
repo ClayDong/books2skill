@@ -107,6 +107,14 @@ def get_index_data(code: str = "000001", start: str = "20200101",
     return df
 
 
+def _wilder_ema(series: pd.Series, period: int) -> pd.Series:
+    """Wilder's exponential moving average (alpha = 1/period).
+
+    Used for ATR, RSI and ADX to match the standard textbook definitions.
+    """
+    return series.ewm(alpha=1.0 / period, min_periods=period, adjust=False).mean()
+
+
 def _calc_indicators(df: pd.DataFrame) -> pd.DataFrame:
     """Calculate all technical indicators needed by strategy."""
     # ── Moving averages ──
@@ -117,14 +125,14 @@ def _calc_indicators(df: pd.DataFrame) -> pd.DataFrame:
     # ── Breakout levels (exclude today, use shift(1)) ──
     df['high_10d'] = df['high'].rolling(10).max().shift(1)
     df['high_20d'] = df['high'].rolling(20).max().shift(1)
-    df['low_10d'] = df['close'].rolling(10).min().shift(1)
-    df['low_20d'] = df['close'].rolling(20).min().shift(1)  # 优化后出场用
+    df['low_10d'] = df['low'].rolling(10).min().shift(1)
+    df['low_20d'] = df['low'].rolling(20).min().shift(1)  # 优化后出场用，与 high_Nd 对称使用 low
 
     # ── Volume ──
     df['vol_ma5'] = df['volume'].rolling(5).mean()
     df['vol_ratio'] = df['volume'] / df['vol_ma5']
 
-    # ── ATR (14-day) ──
+    # ── ATR (14-day, Wilder's smoothing) ──
     df['prev_close'] = df['close'].shift(1)
     df['tr'] = np.maximum(
         df['high'] - df['low'],
@@ -133,14 +141,16 @@ def _calc_indicators(df: pd.DataFrame) -> pd.DataFrame:
             abs(df['low'] - df['prev_close'])
         )
     )
-    df['atr14'] = df['tr'].rolling(14).mean()
+    df['atr14'] = _wilder_ema(df['tr'], period=14)
+    df['atr10'] = _wilder_ema(df['tr'], period=10)
+    df['atr20'] = _wilder_ema(df['tr'], period=20)
 
-    # ── RSI (14-day) ──
+    # ── RSI (14-day, Wilder's smoothing) ──
     delta = df['close'].diff()
     gain = delta.where(delta > 0, 0)
     loss = (-delta).where(delta < 0, 0)
-    avg_gain = gain.rolling(14).mean()
-    avg_loss = loss.rolling(14).mean()
+    avg_gain = _wilder_ema(gain, period=14)
+    avg_loss = _wilder_ema(loss, period=14)
     rs = avg_gain / avg_loss.replace(0, np.nan)
     df['rsi14'] = 100 - (100 / (1 + rs))
 
@@ -195,9 +205,9 @@ def _calc_adx(df: pd.DataFrame, period: int = 14) -> pd.Series:
         )
 
     # Smoothed TR, +DM, -DM (Wilder's smoothing)
-    tr_s = tr.rolling(period).mean()
-    plus_dm_s = plus_dm.rolling(period).mean()
-    minus_dm_s = minus_dm.rolling(period).mean()
+    tr_s = _wilder_ema(tr, period=period)
+    plus_dm_s = _wilder_ema(plus_dm, period=period)
+    minus_dm_s = _wilder_ema(minus_dm, period=period)
 
     # +DI / -DI
     plus_di = 100 * plus_dm_s / tr_s.replace(0, np.nan)
@@ -207,7 +217,7 @@ def _calc_adx(df: pd.DataFrame, period: int = 14) -> pd.Series:
     dx = 100 * abs(plus_di - minus_di) / (plus_di + minus_di).replace(0, np.nan)
 
     # ADX = smoothed DX
-    adx = dx.rolling(period).mean()
+    adx = _wilder_ema(dx, period=period)
     return adx
 
 

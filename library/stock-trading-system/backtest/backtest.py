@@ -62,6 +62,11 @@ class BacktestEngine:
         self.trades = []      # trade records
         self.equity_curve = []
         self.industry_map = {}
+        # Skill 01: account-level risk controls
+        self.peak_equity = capital
+        self.drawdown_cooldown_until = None  # date string, no new entries
+        self.black_swan_cooldown_until = None  # date string, liquidation + 3-day cool-off
+        self.high_risk_mark = False  # single-day drop >=5% flag
 
     def run(self, stock_data: dict, index_data: pd.DataFrame):
         """Run backtest across all dates."""
@@ -74,30 +79,55 @@ class BacktestEngine:
         print(f"Stocks: {len(stock_data)}")
         print("-" * 70)
 
-        for date in all_dates:
+        for idx, date in enumerate(all_dates):
+            date_str = date.strftime('%Y-%m-%d')
+
+            # ── 0. Skill 01: account-level drawdown / black-swan circuit breaker ──
+            self._update_peak_and_drawdown(date_str, stock_data, date)
+            self._apply_circuit_breakers(date_str, stock_data, date, idx, all_dates)
+
+            # Cool-off period: no new entries after black-swan liquidation
+            in_cooloff = (
+                self.black_swan_cooldown_until is not None
+                and date_str <= self.black_swan_cooldown_until
+            )
+
             # ── 1. Market filter (skill 05: 大盘60日线) ──
             if date not in index_dates:
                 continue
             market_ok = bool(index_data.loc[date, 'above_ma60'])
 
-            # ── 2. Check exits for existing positions (skill 08) ──
+            # ── 2. Check exits for existing positions (skill 08 / skill 13) ──
             for code in list(self.positions.keys()):
                 if code not in stock_data or date not in stock_data[code].index:
                     continue
                 row = stock_data[code].loc[date]
-                self._check_exit(code, row, date)
+                pos = self.positions.get(code)
+                if pos and pos.get('strategy') == 'mean_reversion':
+                    self._check_mean_reversion_exit(code, row, date)
+                else:
+                    self._check_exit(code, row, date)
 
-            # ── 3. Check entries (skill 05) ──
-            if market_ok and len(self.positions) < self.max_positions:
+            # ── 3. Check entries (skill 05 / skill 13) ──
+            if (
+                market_ok
+                and not in_cooloff
+                and len(self.positions) < self.max_positions
+            ):
                 for code, df in stock_data.items():
                     if code in self.positions:
                         continue
                     if date not in df.index:
                         continue
                     row = df.loc[date]
+                    # Skill 05: breakout entry (trending market)
                     if self._check_entry(row, code):
                         if self._check_position_limits(code):
-                            self._enter_position(code, row, date)
+                            self._enter_position(code, row, date, strategy='breakout')
+                    # Skill 13: mean reversion entry (ranging market, mutually exclusive with 05)
+                    elif self._check_mean_reversion_entry(row, code):
+                        if self._check_position_limits(code):
+                            self._enter_position(code, row, date, strategy='mean_reversion')
 
             # ── 4. Record daily equity ──
             total_equity = self.cash + sum(
@@ -107,7 +137,7 @@ class BacktestEngine:
                 for c, p in self.positions.items()
             )
             self.equity_curve.append({
-                'date': date.strftime('%Y-%m-%d'),
+                'date': date_str,
                 'equity': round(total_equity, 2),
                 'cash': round(self.cash, 2),
                 'positions': len(self.positions),
@@ -115,6 +145,92 @@ class BacktestEngine:
             })
 
         return self._generate_report()
+
+    # ─────────────────────────────────────────────
+    # Skill 01: Risk Control Baseline
+    # ─────────────────────────────────────────────
+    def _update_peak_and_drawdown(self, date_str: str, stock_data: dict = None, date=None):
+        """Update peak equity and enforce drawdown / black-swan rules."""
+        current_equity = (
+            self.cash
+            + sum(
+                p['shares'] * (
+                    stock_data[c].loc[date, 'close']
+                    if stock_data and date and c in stock_data and date in stock_data[c].index
+                    else p['entry_price']
+                )
+                for c, p in self.positions.items()
+            )
+        )
+        if current_equity > self.peak_equity:
+            self.peak_equity = current_equity
+
+    def _apply_circuit_breakers(self, date_str: str, stock_data: dict, date, idx: int, all_dates: list):
+        """Apply account-level drawdown and black-swan circuit breakers."""
+        if not self.equity_curve:
+            return
+        yesterday_equity = self.equity_curve[-1]['equity']
+
+        # Current equity uses today's close price for held positions
+        current_equity = self.cash + sum(
+            p['shares'] * stock_data[c].loc[date, 'close']
+            if c in stock_data and date in stock_data[c].index
+            else p['shares'] * p['entry_price']
+            for c, p in self.positions.items()
+        )
+
+        # Drawdown from peak
+        drawdown = (self.peak_equity - current_equity) / self.peak_equity
+
+        # Single-day drop
+        single_day_drop = (yesterday_equity - current_equity) / yesterday_equity
+
+        # Skill 01 black-swan thresholds (account-level, single-day)
+        if single_day_drop >= 0.10:
+            # Liquidate all positions and cool off 3 trading days
+            self._liquidate_all(date_str, 'black_swan_10pct', stock_data, date)
+            self.black_swan_cooldown_until = self._add_trading_days(idx, 3, all_dates)
+            self.high_risk_mark = False
+            return
+        elif single_day_drop >= 0.08:
+            self._reduce_all(date_str, 'black_swan_8pct', 0.5, stock_data, date)
+            self.high_risk_mark = True
+        elif single_day_drop >= 0.05:
+            self.high_risk_mark = True
+        else:
+            self.high_risk_mark = False
+
+        # Skill 01 account drawdown thresholds (only if not already handled)
+        if drawdown >= 0.20:
+            self._liquidate_all(date_str, 'drawdown_20pct', stock_data, date)
+            self.drawdown_cooldown_until = date_str
+        elif drawdown >= 0.15:
+            self._reduce_all(date_str, 'drawdown_15pct', 0.5, stock_data, date)
+
+    def _add_trading_days(self, idx: int, days: int, all_dates: list) -> str:
+        """Add N trading days to the current date index."""
+        target_idx = min(idx + days, len(all_dates) - 1)
+        return all_dates[target_idx].strftime('%Y-%m-%d')
+
+    def _liquidate_all(self, date_str: str, reason: str, stock_data: dict = None, date=None):
+        """Liquidate all positions at current market prices."""
+        for code in list(self.positions.keys()):
+            # Use today's close price if available, fall back to entry price
+            if stock_data and date and code in stock_data and date in stock_data[code].index:
+                price = stock_data[code].loc[date, 'close']
+            else:
+                price = self.positions[code]['entry_price']
+            self._exit(code, price, datetime.strptime(date_str, '%Y-%m-%d'), reason)
+
+    def _reduce_all(self, date_str: str, reason: str, ratio: float, stock_data: dict = None, date=None):
+        """Reduce all positions by ratio at current market prices."""
+        for code in list(self.positions.keys()):
+            # Use today's close price if available, fall back to entry price
+            if stock_data and date and code in stock_data and date in stock_data[code].index:
+                price = stock_data[code].loc[date, 'close']
+            else:
+                price = self.positions[code]['entry_price']
+            self._reduce(code, price, datetime.strptime(date_str, '%Y-%m-%d'), reason, ratio)
 
     # ─────────────────────────────────────────────
     # Skill 05: Breakout Entry
@@ -161,12 +277,19 @@ class BacktestEngine:
     # ─────────────────────────────────────────────
     # Skill 06: Position Sizing
     # ─────────────────────────────────────────────
-    def _calc_shares(self, atr: float, price: float) -> int:
+    def _calc_shares(self, atr: float, price: float, code: str = None) -> int:
         """Calculate position size (skill 06: 股数=资金×1%/(2×ATR))."""
         risk_amount = self.initial_capital * RISK_PER_TRADE
         shares = risk_amount / (2 * atr)
         shares = int(shares // 100) * 100  # 向下取整到100股
-        return max(shares, 0)
+        shares = max(shares, 0)
+
+        if code is None or shares == 0:
+            return shares
+
+        # Skill 06: single-stock position cap at 25% of capital
+        max_shares_by_cap = int((self.initial_capital * MAX_POSITION_PCT) / price // 100) * 100
+        return min(shares, max_shares_by_cap)
 
     def _check_position_limits(self, code: str) -> bool:
         """Check position limits (skill 06)."""
@@ -187,17 +310,41 @@ class BacktestEngine:
 
         return True
 
-    def _enter_position(self, code: str, row: pd.Series, date):
+    def _enter_position(self, code: str, row: pd.Series, date, strategy: str = 'breakout'):
         """Enter a new position."""
-        shares = self._calc_shares(row['atr14'], row['close'])
+        # Skill 05 step 8: ATR adaptive logic
+        # High volatility (atr14 > atr20): use atr10 (faster, tighter stop)
+        # Low volatility (atr14 <= atr20): use atr20 (wider stop, more room to breathe)
+        atr10 = row.get('atr10', row['atr14'])
+        atr20 = row.get('atr20', row['atr14'])
+        if not pd.isna(atr10) and not pd.isna(atr20) and not pd.isna(row['atr14']):
+            if row['atr14'] > atr20:
+                # High volatility: use atr10 (faster response, tighter stop)
+                atr_for_sizing = atr10
+            else:
+                # Low volatility: use atr20 (wider stop, give position more room)
+                atr_for_sizing = atr20
+        else:
+            atr_for_sizing = row['atr14']
+
+        shares = self._calc_shares(atr_for_sizing, row['close'], code=code)
         if shares == 0:
             return  # 高价股小资金场景：不足100股不建仓
+
+        # Skill 13: reduce position for mean reversion (首仓15% instead of 25%)
+        if strategy == 'mean_reversion':
+            max_shares_mr = int((self.initial_capital * 0.15) / row['close'] // 100) * 100
+            shares = min(shares, max_shares_mr)
 
         cost = shares * row['close'] * (1 + BUY_COST)
         if cost > self.cash:
             return
 
-        stop_loss = row['close'] - 2 * row['atr14']  # skill 07: 入场价-2×ATR
+        if strategy == 'mean_reversion':
+            # Skill 13 stop loss: min(entry*0.97, bb_lower*0.98), locked never moves down
+            stop_loss = min(row['close'] * 0.97, row.get('bb_lower', row['close']) * 0.98)
+        else:
+            stop_loss = row['close'] - 2 * row['atr14']  # skill 07: 入场价-2×ATR
 
         self.cash -= cost
         self.positions[code] = {
@@ -209,7 +356,8 @@ class BacktestEngine:
             'highest_close': row['close'],  # 持仓期间最高收盘价 (skill 08)
             'industry': self.industry_map.get(code, 'unknown'),
             'below_ma20_days': 0,  # 连续低于20日线天数 (skill 08)
-            'can_sell_date': date.strftime('%Y-%m-%d'),  # T+1 (实际应+1天)
+            'entry_date_for_t1': date.strftime('%Y-%m-%d'),  # T+1 lock: cannot sell on entry day
+            'strategy': strategy,  # 'breakout' or 'mean_reversion'
         }
 
         self.trades.append({
@@ -219,7 +367,7 @@ class BacktestEngine:
             'shares': shares,
             'price': round(row['close'], 2),
             'cost': round(cost, 2),
-            'reason': 'breakout_entry',
+            'reason': f'{strategy}_entry',
             'stop_loss': round(stop_loss, 2),
             'atr14': round(row['atr14'], 2),
             'vol_ratio': round(row['vol_ratio'], 2),
@@ -233,8 +381,8 @@ class BacktestEngine:
         pos = self.positions[code]
         close = row['close']
 
-        # T+1 check
-        if date.strftime('%Y-%m-%d') == pos['can_sell_date']:
+        # T+1 check: cannot sell on the same calendar day as entry
+        if date.strftime('%Y-%m-%d') == pos['entry_date_for_t1']:
             return
 
         # Update highest close
@@ -269,6 +417,12 @@ class BacktestEngine:
         if not pd.isna(row.get('ma20')):
             if close < row['ma20']:
                 pos['below_ma20_days'] += 1
+                # Quick stop: if held <=3 days and already below ma20, exit immediately
+                entry_date_dt = datetime.strptime(pos['entry_date_for_t1'], '%Y-%m-%d')
+                hold_days = (date - entry_date_dt).days
+                if hold_days <= 3:
+                    self._exit(code, close, date, 'ma20_quick_stop')
+                    return
                 if pos['below_ma20_days'] >= 2:
                     self._exit(code, close, date, 'ma20_breakdown_2d')
                     return
@@ -283,6 +437,10 @@ class BacktestEngine:
         pnl = proceeds - cost_basis
         pnl_pct = pnl / cost_basis * 100
 
+        # Calculate actual hold days
+        entry_date_dt = datetime.strptime(pos['entry_date_for_t1'], '%Y-%m-%d')
+        hold_days = max(0, (date - entry_date_dt).days)
+
         self.cash += proceeds
         self.trades.append({
             'date': date.strftime('%Y-%m-%d'),
@@ -294,7 +452,7 @@ class BacktestEngine:
             'pnl': round(pnl, 2),
             'pnl_pct': round(pnl_pct, 2),
             'reason': reason,
-            'hold_days': 'N/A',
+            'hold_days': hold_days,
         })
         del self.positions[code]
 
@@ -303,7 +461,11 @@ class BacktestEngine:
         pos = self.positions[code]
         sell_shares = int(pos['shares'] * ratio // 100) * 100
         if sell_shares < 100:
-            return  # 不足100股不减仓
+            # A-share minimum lot is 100 shares. For a 100-share position,
+            # a 50% reduce is impossible; liquidate instead to honor the signal.
+            if pos['shares'] == 100:
+                self._exit(code, price, date, f"{reason}_force_exit_100shares")
+            return
 
         proceeds = sell_shares * price * (1 - SELL_COST)
         cost_basis = sell_shares * pos['entry_price'] * (1 + BUY_COST)
@@ -325,6 +487,94 @@ class BacktestEngine:
             'reason': reason,
             'remaining': pos['shares'],
         })
+
+    # ─────────────────────────────────────────────
+    # Skill 13: Mean Reversion (placeholder hooks)
+    # ─────────────────────────────────────────────
+    def _check_mean_reversion_entry(self, row: pd.Series, code: str) -> bool:
+        """Mean-reversion entry signal (skill 13).
+
+        Entry conditions:
+        1. RSI14 < 30 (oversold)
+        2. close < bollinger lower band (price extended below range)
+        3. volume contraction: vol_ratio < 1.0 (selling exhaustion)
+           Exception: vol_ratio > 2.0 AND RSI14 < 20 → panic capitulation signal
+        4. ADX < 20 (no strong trend — mean reversion works best in range)
+        """
+        if pd.isna(row.get('rsi14')) or pd.isna(row.get('bb_lower')):
+            return False
+
+        # Limit-down filter: don't buy if limit-down (can't execute)
+        if 'pct_change' in row and not pd.isna(row['pct_change']):
+            limit_pct = get_limit_pct(code)
+            if row['pct_change'] <= -limit_pct * 100 * 0.99:
+                return False  # 跌停封板，无法成交，待次日
+
+        # Core conditions
+        rsi_oversold = row['rsi14'] < 30
+        below_bb_lower = row['close'] < row['bb_lower']
+
+        # Volume condition: contraction or mild expansion (normal for A-share oversold bounces)
+        # Exception: vol_ratio > 2.0 AND RSI14 < 20 → panic capitulation signal
+        vol_ratio = row.get('vol_ratio', 0)
+        vol_ok = vol_ratio < 1.5  # Allow mild expansion (matches skill 13 step 5: ≤1.5 is neutral/ok)
+        panic_capitulation = vol_ratio > 2.0 and row['rsi14'] < 20
+        vol_ok = vol_ok or panic_capitulation
+
+        # ADX: no strong trend
+        adx_ok = True
+        if not pd.isna(row.get('adx14')):
+            adx_ok = row['adx14'] < 20
+
+        return rsi_oversold and below_bb_lower and vol_ok and adx_ok
+
+    def _check_mean_reversion_exit(self, code: str, row: pd.Series, date) -> bool:
+        """Mean-reversion exit signal (skill 13).
+
+        Exit conditions (any triggers exit):
+        1. price >= bb_mid (mean reversion target reached)
+        2. RSI14 > 70 (overbought reversal)
+        3. time stop: held >= 10 trading days without reverting
+        4. stop loss: close < stop_loss_price (locked, never moves down)
+        """
+        pos = self.positions.get(code)
+        if pos is None:
+            return False
+
+        # T+1 check: cannot sell on the same calendar day as entry
+        if date.strftime('%Y-%m-%d') == pos['entry_date_for_t1']:
+            return False
+
+        # 1. Mean reversion target: price back to bb_mid → reduce 50% (half target reached)
+        if not pd.isna(row.get('bb_mid')) and row['close'] >= row['bb_mid']:
+            self._reduce(code, row['close'], date, 'mr_bb_mid_target', 0.5)
+            # After reduce, position may be gone (100-share force_exit) — check before continuing
+            if code not in self.positions:
+                return True
+
+        # 1b. Mean reversion complete: price >= bb_upper → full exit (beyond mean)
+        if not pd.isna(row.get('bb_upper')) and row['close'] >= row['bb_upper']:
+            self._exit(code, row['close'], date, 'mr_bb_upper_target')
+            return True
+
+        # 2. RSI overbought
+        if not pd.isna(row.get('rsi14')) and row['rsi14'] > 70:
+            self._exit(code, row['close'], date, 'mr_rsi_overbought')
+            return True
+
+        # 3. Time stop: ~10 trading days (use 14 calendar days to approximate)
+        entry_date_dt = datetime.strptime(pos['entry_date_for_t1'], '%Y-%m-%d')
+        hold_days = (date - entry_date_dt).days
+        if hold_days >= 14:  # 14 calendar days ≈ 10 trading days
+            self._exit(code, row['close'], date, 'mr_time_stop_10d')
+            return True
+
+        # 4. Stop loss (locked, never moves down)
+        if row['close'] < pos['stop_loss']:
+            self._exit(code, row['close'], date, 'mr_stop_loss')
+            return True
+
+        return False
 
     # ─────────────────────────────────────────────
     # Performance Analysis
