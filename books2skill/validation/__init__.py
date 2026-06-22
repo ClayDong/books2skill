@@ -1,5 +1,5 @@
 """
-Validation system for Cangjie Skill
+Validation system for Books2Skill
 """
 
 from .validate_system import (

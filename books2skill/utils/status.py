@@ -1,5 +1,5 @@
 """
-System status utilities for Cangjie Skill
+System status utilities for Books2Skill
 """
 
 import platform
@@ -8,8 +8,8 @@ from pathlib import Path
 from typing import Dict, Any, List
 import importlib.metadata
 
-from cangjie.config import settings
-from cangjie.utils.logging import get_logger
+from books2skill.config import settings
+from books2skill.utils.logging import get_logger
 
 logger = get_logger("status")
 
@@ -40,10 +40,10 @@ def get_system_status() -> Dict[str, Any]:
 
 
 def get_version() -> str:
-    """Get Cangjie Skill version"""
+    """Get Books2Skill version"""
     try:
         # Try to get version from package metadata
-        return importlib.metadata.version("cangjie-skill")
+        return importlib.metadata.version("books2skill")
     except importlib.metadata.PackageNotFoundError:
         # Fallback to hardcoded version
         return "2.0.0"
@@ -275,7 +275,7 @@ def get_recent_activity() -> List[Dict[str, Any]]:
         {
             "timestamp": "2026-06-22 10:00:00",
             "activity": "System started",
-            "details": "Cangjie Skill initialized",
+            "details": "Books2Skill initialized",
         }
     ]
 
@@ -302,7 +302,7 @@ def print_status_summary() -> None:
     status = get_system_status()
 
     # Create main table
-    table = Table(title="Cangjie Skill System Status", show_header=True, header_style="bold magenta")
+    table = Table(title="Books2Skill System Status", show_header=True, header_style="bold magenta")
     table.add_column("Metric", style="cyan", no_wrap=True)
     table.add_column("Value", style="green")
 

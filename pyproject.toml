@@ -1,12 +1,12 @@
 [project]
-name = "cangjie-skill"
+name = "books2skill"
 version = "2.0.0"
 description = "A generator workflow for turning books into reusable AI skills — single-book distillation (RIA-TV++) + multi-book orchestration"
 readme = "README.md"
 requires-python = ">=3.8"
 license = {text = "MIT"}
 authors = [
-    {name = "kangarooking", email = ""},
+    {name = "ClayDong", email = ""},
 ]
 classifiers = [
     "Development Status :: 4 - Beta",
@@ -63,13 +63,13 @@ benchmark = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/kangarooking/cangjie-skill"
-Documentation = "https://github.com/kangarooking/cangjie-skill#readme"
-Repository = "https://github.com/kangarooking/cangjie-skill"
-Issues = "https://github.com/kangarooking/cangjie-skill/issues"
+Homepage = "https://github.com/ClayDong/books2skill"
+Documentation = "https://github.com/ClayDong/books2skill#readme"
+Repository = "https://github.com/ClayDong/books2skill"
+Issues = "https://github.com/ClayDong/books2skill/issues"
 
 [project.scripts]
-cangjie = "cangjie.__main__:cli"
+books2skill = "books2skill.__main__:cli"
 
 [build-system]
 requires = ["setuptools>=61.0", "wheel"]
@@ -127,7 +127,7 @@ addopts = [
     "--strict-markers",
     "--strict-config",
     "--tb=short",
-    "--cov=cangjie",
+    "--cov=books2skill",
     "--cov-report=term-missing",
     "--cov-report=html",
 ]
@@ -138,7 +138,7 @@ markers = [
 ]
 
 [tool.coverage.run]
-source = ["cangjie"]
+source = ["books2skill"]
 omit = [
     "*/tests/*",
     "*/test_*.py",

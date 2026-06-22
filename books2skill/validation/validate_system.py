@@ -1,5 +1,5 @@
 """
-Extended validation system for Cangjie Skill
+Extended validation system for Books2Skill
 """
 
 import json
@@ -12,8 +12,8 @@ from enum import Enum
 from rich.console import Console
 from rich.table import Table
 
-from cangjie.config import settings
-from cangjie.utils.logging import get_logger
+from books2skill.config import settings
+from books2skill.utils.logging import get_logger
 
 logger = get_logger("validation")
 console = Console()

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Cangjie Skill - Main Entry Point
+Books2Skill - Main Entry Point
 A generator workflow for turning books into reusable AI skills
 """
 
@@ -18,8 +18,8 @@ from rich.progress import Progress, SpinnerColumn, TextColumn, BarColumn, TimeEl
 project_root = Path(__file__).parent
 sys.path.insert(0, str(project_root))
 
-from cangjie.config import settings
-from cangjie.utils.logging import setup_logging
+from books2skill.config import settings
+from books2skill.utils.logging import setup_logging
 
 # Initialize console
 console = Console()
@@ -28,13 +28,13 @@ console = Console()
 logger = setup_logging()
 
 @click.group()
-@click.version_option(version="2.0.0", prog_name="Cangjie Skill")
+@click.version_option(version="2.0.0", prog_name="Books2Skill")
 @click.option("--verbose", "-v", is_flag=True, help="Enable verbose output")
 @click.option("--debug", "-d", is_flag=True, help="Enable debug mode")
 @click.option("--config", "-c", type=click.Path(exists=True), help="Path to config file")
 @click.pass_context
 def cli(ctx, verbose, debug, config):
-    """Cangjie Skill - Turn books into reusable AI skills"""
+    """Books2Skill - Turn books into reusable AI skills"""
     # Store context
     ctx.ensure_object(dict)
     ctx.obj["verbose"] = verbose
@@ -50,7 +50,7 @@ def cli(ctx, verbose, debug, config):
     elif verbose:
         logger.setLevel(logging.INFO)
 
-    logger.debug(f"Cangjie Skill started with config: {config}")
+    logger.debug(f"Books2Skill started with config: {config}")
 
 @cli.command()
 @click.argument("book_path", type=click.Path(exists=True))
@@ -61,7 +61,7 @@ def cli(ctx, verbose, debug, config):
 @click.pass_context
 def distill(ctx, book_path, output_dir, skip_ocr, skip_validation, fast):
     """Distill a book into skills (RIA-TV++ stages 0-4)"""
-    from cangjie.pipeline.distill import run_distillation
+    from books2skill.pipeline.distill import run_distillation
 
     console.print("[bold blue]Starting book distillation...[/bold blue]")
 
@@ -96,8 +96,8 @@ def distill(ctx, book_path, output_dir, skip_ocr, skip_validation, fast):
                 # Show next steps
                 console.print("\n[bold]Next steps:[/bold]")
                 console.print("  1. Review skills in the output directory")
-                console.print("  2. Run validation: cangjie validate")
-                console.print("  3. Update global index: cangjie index-update")
+                console.print("  2. Run validation: books2skill validate")
+                console.print("  3. Update global index: books2skill index-update")
             else:
                 console.print(f"[bold red]✗ Distillation failed![/bold red]")
                 console.print(f"   Error: {result['error']}")
@@ -117,7 +117,7 @@ def distill(ctx, book_path, output_dir, skip_ocr, skip_validation, fast):
 @click.pass_context
 def orchestrate(ctx, intent, books, output_format, detailed):
     """Orchestrate multiple books for an intent (stages 5-6)"""
-    from cangjie.pipeline.orchestrate import run_orchestration
+    from books2skill.pipeline.orchestrate import run_orchestration
 
     console.print("[bold blue]Starting multi-book orchestration...[/bold blue]")
 
@@ -163,7 +163,7 @@ def orchestrate(ctx, intent, books, output_format, detailed):
 @click.pass_context
 def validate(ctx, check, fix, strict):
     """Validate system consistency and quality"""
-    from cangjie.validation.validate_system import run_validation
+    from books2skill.validation.validate_system import run_validation
 
     console.print("[bold blue]Running system validation...[/bold blue]")
 
@@ -222,7 +222,7 @@ def validate(ctx, check, fix, strict):
 @click.pass_context
 def index_update(ctx, all, force):
     """Update global indices (stage 4.5)"""
-    from cangjie.library.index_builder import build_global_indices
+    from books2skill.library.index_builder import build_global_indices
 
     console.print("[bold blue]Updating global indices...[/bold blue]")
 
@@ -260,10 +260,10 @@ def serve(ctx, host, port, reload):
     console.print("[bold yellow]Web interface is not yet implemented[/bold yellow]")
     console.print("This feature is planned for future releases")
     console.print("\nFor now, please use the CLI commands:")
-    console.print("  cangjie distill <book>    - Distill a book")
-    console.print("  cangjie orchestrate <intent> - Multi-book orchestration")
-    console.print("  cangjie validate         - Validate system")
-    console.print("  cangjie index-update     - Update indices")
+    console.print("  books2skill distill <book>    - Distill a book")
+    console.print("  books2skill orchestrate <intent> - Multi-book orchestration")
+    console.print("  books2skill validate         - Validate system")
+    console.print("  books2skill index-update     - Update indices")
 
 @cli.command()
 @click.argument("pdf_path", type=click.Path(exists=True))
@@ -273,7 +273,7 @@ def serve(ctx, host, port, reload):
 @click.pass_context
 def ocr(ctx, pdf_path, output_dir, parallel, gpu):
     """Extract text from scanned PDF using OCR"""
-    from cangjie.ocr.processor import process_pdf_ocr
+    from books2skill.ocr.processor import process_pdf_ocr
 
     console.print("[bold blue]Starting OCR processing...[/bold blue]")
 
@@ -309,7 +309,7 @@ def ocr(ctx, pdf_path, output_dir, parallel, gpu):
 @click.pass_context
 def test(ctx, skill_id, all, output_dir):
     """Run skill tests"""
-    from cangjie.testing.runner import run_skill_tests
+    from books2skill.testing.runner import run_skill_tests
 
     console.print("[bold blue]Running skill tests...[/bold blue]")
 
@@ -353,12 +353,12 @@ def test(ctx, skill_id, all, output_dir):
 @cli.command()
 def status():
     """Show system status"""
-    from cangjie.utils.status import get_system_status
+    from books2skill.utils.status import get_system_status
 
     try:
         status_info = get_system_status()
 
-        console.print("[bold blue]Cangjie Skill System Status[/bold blue]")
+        console.print("[bold blue]Books2Skill System Status[/bold blue]")
         console.print("="*50)
 
         # Basic info

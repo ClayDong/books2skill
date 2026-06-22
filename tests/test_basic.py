@@ -1,5 +1,5 @@
 """
-Basic tests for Cangjie Skill
+Basic tests for Books2Skill
 """
 
 import sys
@@ -12,20 +12,20 @@ sys.path.insert(0, str(project_root))
 
 def test_imports():
     """Test basic imports"""
-    import cangjie
-    import cangjie.config
-    import cangjie.utils.logging
-    import cangjie.validation.validate_system
+    import books2skill
+    import books2skill.config
+    import books2skill.utils.logging
+    import books2skill.validation.validate_system
 
-    assert cangjie is not None
-    assert cangjie.config is not None
-    assert cangjie.utils.logging is not None
-    assert cangjie.validation.validate_system is not None
+    assert books2skill is not None
+    assert books2skill.config is not None
+    assert books2skill.utils.logging is not None
+    assert books2skill.validation.validate_system is not None
 
 
 def test_config():
     """Test configuration loading"""
-    from cangjie.config import settings
+    from books2skill.config import settings
 
     assert settings is not None
     assert hasattr(settings, 'PROJECT_ROOT')
@@ -39,21 +39,21 @@ def test_config():
 
 def test_logging():
     """Test logging setup"""
-    from cangjie.utils.logging import setup_logging, get_logger
+    from books2skill.utils.logging import setup_logging, get_logger
 
     logger = setup_logging(level="INFO")
     assert logger is not None
-    assert logger.name == "cangjie"
+    assert logger.name == "books2skill"
 
     # Test getting named logger
     test_logger = get_logger("test")
     assert test_logger is not None
-    assert test_logger.name == "cangjie.test"
+    assert test_logger.name == "books2skill.test"
 
 
 def test_validation_structure():
     """Test validation system structure"""
-    from cangjie.validation.validate_system import (
+    from books2skill.validation.validate_system import (
         ValidationSeverity,
         ValidationResult,
         run_validation,
@@ -94,7 +94,7 @@ def test_validation_structure():
 
 def test_validation_functions():
     """Test validation helper functions"""
-    from cangjie.validation.validate_system import parse_frontmatter
+    from books2skill.validation.validate_system import parse_frontmatter
 
     # Test frontmatter parsing
     content = """---
@@ -121,7 +121,7 @@ Content here
 def test_pipeline_structure():
     """Test pipeline module structure"""
     try:
-        from cangjie.pipeline.distill import (
+        from books2skill.pipeline.distill import (
             DistillationStage,
             DistillationResult,
             DistillationPipeline,

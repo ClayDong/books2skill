@@ -1,6 +1,6 @@
 # GitHub Repo Metadata
 
-- Repository name: `cangjie-skill`
+- Repository name: `books2skill`
 - Default README: `README.md`
 - Description: `A generator workflow for turning books into reusable AI skills — single-book distillation (RIA-TV++) + multi-book orchestration (intent-driven recall, conflict resolution, decision cards).`
 - Topics:

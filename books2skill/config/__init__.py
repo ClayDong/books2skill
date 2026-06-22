@@ -1,5 +1,5 @@
 """
-Cangjie Skill Configuration Module
+Books2Skill Configuration Module
 """
 
 import os
@@ -45,7 +45,7 @@ class Settings(BaseSettings):
     # Logging Configuration
     LOG_LEVEL: str = Field(default="INFO", env="LOG_LEVEL")
     LOG_FORMAT: str = Field(default="json", env="LOG_FORMAT")
-    LOG_FILE: Path = Field(default=Path("./logs/cangjie.log"), env="LOG_FILE")
+    LOG_FILE: Path = Field(default=Path("./logs/books2skill.log"), env="LOG_FILE")
     LOG_ROTATION: str = Field(default="10 MB", env="LOG_ROTATION")
     LOG_RETENTION: str = Field(default="30 days", env="LOG_RETENTION")
 

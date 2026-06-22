@@ -1,11 +1,11 @@
-# Cangjie Skill Makefile
+# Books2Skill Makefile
 # Common commands for development and deployment
 
 .PHONY: help install dev-install format lint test test-cov clean dist docker-build docker-run
 
 # Default target
 help:
-	@echo "Cangjie Skill Development Commands"
+	@echo "Books2Skill Development Commands"
 	@echo ""
 	@echo "Development:"
 	@echo "  install          Install production dependencies"
@@ -48,7 +48,7 @@ test:
 	pytest tests/ -v
 
 test-cov:
-	pytest tests/ --cov=cangjie --cov-report=html --cov-report=term-missing -v
+	pytest tests/ --cov=books2skill --cov-report=html --cov-report=term-missing -v
 
 # Processing
 extract:
@@ -61,7 +61,7 @@ validate:
 	python scripts/validate_system.py
 
 distill:
-	python -m cangjie distill --book "path/to/book.pdf"
+	python -m books2skill distill --book "path/to/book.pdf"
 
 # Deployment
 clean:
@@ -73,10 +73,10 @@ dist: clean
 	python -m build
 
 docker-build:
-	docker build -t cangjie-skill .
+	docker build -t books2skill .
 
 docker-run:
-	docker run -it --rm -v $(pwd)/data:/app/data cangjie-skill
+	docker run -it --rm -v $(pwd)/data:/app/data books2skill
 
 # Pre-commit hooks
 pre-commit-run:

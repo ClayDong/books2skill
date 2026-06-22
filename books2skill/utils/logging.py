@@ -1,5 +1,5 @@
 """
-Logging utilities for Cangjie Skill
+Logging utilities for Books2Skill
 """
 
 import logging
@@ -11,7 +11,7 @@ from rich.console import Console
 from rich.logging import RichHandler
 from rich.traceback import install as install_rich_traceback
 
-from cangjie.config import settings
+from books2skill.config import settings
 
 
 def setup_logging(
@@ -40,7 +40,7 @@ def setup_logging(
     log_level = getattr(logging, level.upper())
 
     # Create logger
-    logger = logging.getLogger("cangjie")
+    logger = logging.getLogger("books2skill")
     logger.setLevel(log_level)
 
     # Remove existing handlers
@@ -134,7 +134,7 @@ def setup_logging(
             logger.warning("RotatingFileHandler not available, using regular file handler")
 
     # Log startup message
-    logger.info(f"Cangjie Skill logging initialized (level: {level})")
+    logger.info(f"Books2Skill logging initialized (level: {level})")
     if log_file:
         logger.info(f"Log file: {log_file.absolute()}")
 
@@ -188,7 +188,7 @@ def get_logger(name: str) -> logging.Logger:
     Returns:
         Logger instance
     """
-    return logging.getLogger(f"cangjie.{name}")
+    return logging.getLogger(f"books2skill.{name}")
 
 
 class LoggingContext:
@@ -207,7 +207,7 @@ class LoggingContext:
         self.original_level = None
 
     def __enter__(self):
-        logger = logging.getLogger("cangjie")
+        logger = logging.getLogger("books2skill")
 
         # Save original state
         self.original_handlers = logger.handlers[:]
@@ -226,7 +226,7 @@ class LoggingContext:
         return logger
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        logger = logging.getLogger("cangjie")
+        logger = logging.getLogger("books2skill")
 
         # Restore original state
         logger.handlers.clear()

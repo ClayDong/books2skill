@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Installation script for Cangjie Skill
+Installation script for Books2Skill
 """
 
 import sys
@@ -229,7 +229,7 @@ def run_tests() -> bool:
 def print_success_message(venv_path: Optional[Path] = None) -> None:
     """Print success message with next steps"""
     console.print(Panel(
-        "[bold green]✅ Cangjie Skill installation completed successfully![/bold green]",
+        "[bold green]✅ Books2Skill installation completed successfully![/bold green]",
         title="Installation Complete",
         border_style="green",
     ))
@@ -245,11 +245,11 @@ def print_success_message(venv_path: Optional[Path] = None) -> None:
     console.print("     [cyan]Edit .env file to customize settings[/cyan]")
 
     console.print("  3. Try it out:")
-    console.print("     [cyan]cangjie --help[/cyan] - Show all commands")
-    console.print("     [cyan]cangjie status[/cyan] - Check system status")
+    console.print("     [cyan]books2skill --help[/cyan] - Show all commands")
+    console.print("     [cyan]books2skill status[/cyan] - Check system status")
 
     console.print("  4. Get started with a book:")
-    console.print("     [cyan]cangjie distill path/to/book.pdf[/cyan]")
+    console.print("     [cyan]books2skill distill path/to/book.pdf[/cyan]")
 
     console.print("\n[bold]Documentation:[/bold]")
     console.print("  - README.md - Getting started guide")
@@ -259,20 +259,20 @@ def print_success_message(venv_path: Optional[Path] = None) -> None:
     console.print("\n[bold]Need help?[/bold]")
     console.print("  - Check the logs in logs/ directory")
     console.print("  - Review the configuration in .env file")
-    console.print("  - Run validation: [cyan]cangjie validate[/cyan]")
+    console.print("  - Run validation: [cyan]books2skill validate[/cyan]")
 
 
 def main():
     """Main installation function"""
     console.print(Panel(
-        "[bold blue]Cangjie Skill Installation[/bold blue]",
+        "[bold blue]Books2Skill Installation[/bold blue]",
         subtitle="Turning books into reusable AI skills",
         border_style="blue",
     ))
 
     # Parse arguments
     import argparse
-    parser = argparse.ArgumentParser(description="Install Cangjie Skill")
+    parser = argparse.ArgumentParser(description="Install Books2Skill")
     parser.add_argument("--venv", type=Path, help="Path for virtual environment")
     parser.add_argument("--no-venv", action="store_true", help="Skip virtual environment creation")
     parser.add_argument("--skip-tests", action="store_true", help="Skip running tests")

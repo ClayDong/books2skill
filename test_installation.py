@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Test script to verify Cangjie Skill installation
+Test script to verify Books2Skill installation
 """
 
 import sys
@@ -10,21 +10,21 @@ from pathlib import Path
 project_root = Path(__file__).parent
 sys.path.insert(0, str(project_root))
 
-print("🧪 Testing Cangjie Skill Installation...")
+print("🧪 Testing Books2Skill Installation...")
 print("=" * 50)
 
 # Test 1: Import core modules
 print("\n1. Testing core module imports...")
 try:
-    import cangjie
-    import cangjie.config
-    import cangjie.utils.logging
-    import cangjie.validation.validate_system
+    import books2skill
+    import books2skill.config
+    import books2skill.utils.logging
+    import books2skill.validation.validate_system
 
     print("   ✅ Core modules imported successfully")
 
     # Test config
-    from cangjie.config import settings
+    from books2skill.config import settings
     print(f"   ✅ Config loaded: {settings.PROJECT_ROOT}")
 
 except ImportError as e:
@@ -34,11 +34,11 @@ except ImportError as e:
 # Test 2: Check directory structure
 print("\n2. Checking directory structure...")
 required_dirs = [
-    "cangjie",
-    "cangjie/config",
-    "cangjie/utils",
-    "cangjie/validation",
-    "cangjie/pipeline",
+    "books2skill",
+    "books2skill/config",
+    "books2skill/utils",
+    "books2skill/validation",
+    "books2skill/pipeline",
     "scripts",
     "tests",
 ]
@@ -58,7 +58,7 @@ if not all_good:
 # Test 3: Check required files
 print("\n3. Checking required files...")
 required_files = [
-    "cangjie/__main__.py",
+    "books2skill/__main__.py",
     "pyproject.toml",
     "requirements.txt",
     ".env.example",
@@ -82,11 +82,11 @@ for file_path in required_files:
 print("\n4. Testing CLI interface...")
 try:
     # This imports the CLI but doesn't run it
-    import cangjie.__main__ as main_module
+    import books2skill.__main__ as main_module
     if hasattr(main_module, 'cli'):
         print("   ✅ CLI interface found")
     else:
-        print("   ⚠️  CLI interface not found (may be in cangjie/__main__.py)")
+        print("   ⚠️  CLI interface not found (may be in books2skill/__main__.py)")
 
 except Exception as e:
     print(f"   ⚠️  CLI test warning: {e}")
@@ -94,7 +94,7 @@ except Exception as e:
 # Test 5: Test validation system
 print("\n5. Testing validation system...")
 try:
-    from cangjie.validation.validate_system import (
+    from books2skill.validation.validate_system import (
         ValidationSeverity,
         ValidationResult,
         run_validation,
@@ -123,7 +123,7 @@ except Exception as e:
 # Test 6: Test logging system
 print("\n6. Testing logging system...")
 try:
-    from cangjie.utils.logging import setup_logging, get_logger
+    from books2skill.utils.logging import setup_logging, get_logger
 
     logger = setup_logging(level="INFO")
     test_logger = get_logger("test")
@@ -150,8 +150,8 @@ print("   - Essential files")
 print("\n🚀 Next steps:")
 print("   1. Run: python scripts/install.py")
 print("   2. Configure: cp .env.example .env")
-print("   3. Test: cangjie status")
-print("   4. Distill: cangjie distill path/to/book.pdf")
+print("   3. Test: books2skill status")
+print("   4. Distill: books2skill distill path/to/book.pdf")
 
 print("\n📚 Documentation:")
 print("   - QUICKSTART.md - Get started in 5 minutes")

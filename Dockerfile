@@ -1,4 +1,4 @@
-# Cangjie Skill Dockerfile
+# Books2Skill Dockerfile
 # Multi-stage build for production and development
 
 # Stage 1: Builder
@@ -39,12 +39,12 @@ COPY --from=builder /root/.local /root/.local
 ENV PATH=/root/.local/bin:$PATH
 
 # Create non-root user
-RUN useradd -m -u 1000 cangjie && \
-    chown -R cangjie:cangjie /app
-USER cangjie
+RUN useradd -m -u 1000 books2skill && \
+    chown -R books2skill:books2skill /app
+USER books2skill
 
 # Copy application code
-COPY --chown=cangjie:cangjie . .
+COPY --chown=books2skill:books2skill . .
 
 # Create necessary directories
 RUN mkdir -p data/books_raw data/books_txt data/books_txt_ocr data/library data/logs
@@ -58,14 +58,14 @@ ENV BOOKS_TXT_DIR=/app/data/books_txt
 ENV BOOKS_TXT_OCR_DIR=/app/data/books_txt_ocr
 ENV LIBRARY_DIR=/app/data/library
 ENV OUTPUT_DIR=/app/data/output
-ENV LOG_FILE=/app/data/logs/cangjie.log
+ENV LOG_FILE=/app/data/logs/books2skill.log
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
     CMD python -c "import sys; sys.exit(0)"
 
 # Default command
-CMD ["python", "-m", "cangjie", "--help"]
+CMD ["python", "-m", "books2skill", "--help"]
 
 # Stage 3: Development (optional)
 FROM builder AS development
@@ -105,4 +105,4 @@ RUN pip install --user --no-cache-dir -r requirements-test.txt
 COPY tests/ tests/
 
 # Run tests
-CMD ["python", "-m", "pytest", "tests/", "-v", "--cov=cangjie", "--cov-report=html"]
+CMD ["python", "-m", "pytest", "tests/", "-v", "--cov=books2skill", "--cov-report=html"]

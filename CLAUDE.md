@@ -1,10 +1,10 @@
-# CLAUDE.md — cangjie-skill 项目工作规则
+# CLAUDE.md — books2skill 项目工作规则
 
 > 本文件是本项目的最高工作约束。任何迭代都必须遵守。
 
 ## 项目定位
 
-cangjie-skill 是一个 **book2skill 元 skill 框架**：把书蒸馏成可被 agent 调用的 atomic skills。
+books2skill 是一个 **book2skill 元 skill 框架**：把书蒸馏成可被 agent 调用的 atomic skills。
 
 - **单书蒸馏**（v1.0，已稳定）：RIA-TV++ 流水线，阶段 0-4
 - **多书协同**（v2.0，本次新增）：意图驱动编排层，阶段 5-6
@@ -38,7 +38,7 @@ cangjie-skill 是一个 **book2skill 元 skill 框架**：把书蒸馏成可被 
 ## 目录结构（v2.0）
 
 ```
-cangjie-skill/
+books2skill/
 ├── CLAUDE.md                    ← 本文件
 ├── SKILL.md                     ← 元 skill 定义
 ├── methodology/                 ← 方法论文档

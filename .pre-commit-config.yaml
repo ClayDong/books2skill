@@ -1,4 +1,4 @@
-# Simple pre-commit configuration for Cangjie Skill
+# Simple pre-commit configuration for Books2Skill
 repos:
   - repo: local
     hooks:

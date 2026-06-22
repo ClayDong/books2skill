@@ -1,11 +1,11 @@
 version: '3.8'
 
 services:
-  cangjie:
+  books2skill:
     build:
       context: .
       target: production
-    container_name: cangjie-skill
+    container_name: books2skill
     volumes:
       - ./data:/app/data
       - ./logs:/app/logs
@@ -18,7 +18,7 @@ services:
       - LIBRARY_DIR=/app/data/library
       - OUTPUT_DIR=/app/data/output
       - LOG_LEVEL=INFO
-      - LOG_FILE=/app/logs/cangjie.log
+      - LOG_FILE=/app/logs/books2skill.log
     ports:
       - "8000:8000"  # For future web interface
     restart: unless-stopped
@@ -28,13 +28,13 @@ services:
       timeout: 10s
       retries: 3
       start_period: 40s
-    command: ["python", "-m", "cangjie", "serve"]  # Future web server
+    command: ["python", "-m", "books2skill", "serve"]  # Future web server
 
-  cangjie-dev:
+  books2skill-dev:
     build:
       context: .
       target: development
-    container_name: cangjie-skill-dev
+    container_name: books2skill-dev
     volumes:
       - .:/app
       - ./data:/app/data
@@ -52,26 +52,26 @@ services:
       - "8001:8000"
     stdin_open: true
     tty: true
-    command: ["python", "-m", "debugpy", "--listen", "0.0.0.0:5678", "-m", "cangjie"]
+    command: ["python", "-m", "debugpy", "--listen", "0.0.0.0:5678", "-m", "books2skill"]
 
-  cangjie-test:
+  books2skill-test:
     build:
       context: .
       target: testing
-    container_name: cangjie-skill-test
+    container_name: books2skill-test
     volumes:
       - ./tests:/app/tests
       - ./coverage:/app/coverage
     environment:
       - PYTHONPATH=/app
       - COVERAGE_FILE=/app/coverage/.coverage
-    command: ["python", "-m", "pytest", "tests/", "-v", "--cov=cangjie", "--cov-report=html", "--cov-report=term"]
+    command: ["python", "-m", "pytest", "tests/", "-v", "--cov=books2skill", "--cov-report=html", "--cov-report=term"]
 
   ocr-worker:
     build:
       context: .
       target: production
-    container_name: cangjie-ocr-worker
+    container_name: books2skill-ocr-worker
     volumes:
       - ./data:/app/data
       - ./logs:/app/logs/ocr
@@ -91,7 +91,7 @@ services:
 
   redis:
     image: redis:7-alpine
-    container_name: cangjie-redis
+    container_name: books2skill-redis
     ports:
       - "6379:6379"
     volumes:
@@ -105,18 +105,18 @@ services:
 
   postgres:
     image: postgres:15-alpine
-    container_name: cangjie-postgres
+    container_name: books2skill-postgres
     environment:
-      - POSTGRES_USER=cangjie
-      - POSTGRES_PASSWORD=cangjie123
-      - POSTGRES_DB=cangjie_db
+      - POSTGRES_USER=books2skill
+      - POSTGRES_PASSWORD=books2skill123
+      - POSTGRES_DB=books2skill_db
     ports:
       - "5432:5432"
     volumes:
       - postgres-data:/var/lib/postgresql/data
       - ./init-db.sql:/docker-entrypoint-initdb.d/init.sql
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U cangjie"]
+      test: ["CMD-SHELL", "pg_isready -U books2skill"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -133,5 +133,5 @@ volumes:
 
 networks:
   default:
-    name: cangjie-network
+    name: books2skill-network
     driver: bridge

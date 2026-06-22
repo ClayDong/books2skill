@@ -10,8 +10,8 @@ from enum import Enum
 
 from rich.progress import Progress
 
-from cangjie.config import settings
-from cangjie.utils.logging import get_logger
+from books2skill.config import settings
+from books2skill.utils.logging import get_logger
 
 logger = get_logger("pipeline.distill")
 
