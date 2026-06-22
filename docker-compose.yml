@@ -1,0 +1,137 @@
+version: '3.8'
+
+services:
+  cangjie:
+    build:
+      context: .
+      target: production
+    container_name: cangjie-skill
+    volumes:
+      - ./data:/app/data
+      - ./logs:/app/logs
+      - ./config:/app/config
+    environment:
+      - PROJECT_ROOT=/app
+      - BOOKS_RAW_DIR=/app/data/books_raw
+      - BOOKS_TXT_DIR=/app/data/books_txt
+      - BOOKS_TXT_OCR_DIR=/app/data/books_txt_ocr
+      - LIBRARY_DIR=/app/data/library
+      - OUTPUT_DIR=/app/data/output
+      - LOG_LEVEL=INFO
+      - LOG_FILE=/app/logs/cangjie.log
+    ports:
+      - "8000:8000"  # For future web interface
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import sys; sys.exit(0)"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    command: ["python", "-m", "cangjie", "serve"]  # Future web server
+
+  cangjie-dev:
+    build:
+      context: .
+      target: development
+    container_name: cangjie-skill-dev
+    volumes:
+      - .:/app
+      - ./data:/app/data
+      - ./logs:/app/logs
+    environment:
+      - PROJECT_ROOT=/app
+      - BOOKS_RAW_DIR=/app/data/books_raw
+      - BOOKS_TXT_DIR=/app/data/books_txt
+      - BOOKS_TXT_OCR_DIR=/app/data/books_txt_ocr
+      - LIBRARY_DIR=/app/data/library
+      - OUTPUT_DIR=/app/data/output
+      - LOG_LEVEL=DEBUG
+      - DEBUG=true
+    ports:
+      - "8001:8000"
+    stdin_open: true
+    tty: true
+    command: ["python", "-m", "debugpy", "--listen", "0.0.0.0:5678", "-m", "cangjie"]
+
+  cangjie-test:
+    build:
+      context: .
+      target: testing
+    container_name: cangjie-skill-test
+    volumes:
+      - ./tests:/app/tests
+      - ./coverage:/app/coverage
+    environment:
+      - PYTHONPATH=/app
+      - COVERAGE_FILE=/app/coverage/.coverage
+    command: ["python", "-m", "pytest", "tests/", "-v", "--cov=cangjie", "--cov-report=html", "--cov-report=term"]
+
+  ocr-worker:
+    build:
+      context: .
+      target: production
+    container_name: cangjie-ocr-worker
+    volumes:
+      - ./data:/app/data
+      - ./logs:/app/logs/ocr
+    environment:
+      - ROLE=ocr_worker
+      - OCR_USE_GPU=false
+      - MAX_WORKERS=2
+      - LOG_LEVEL=INFO
+    command: ["python", "scripts/ocr_worker.py"]
+    deploy:
+      replicas: 2
+      resources:
+        limits:
+          memory: 2G
+        reservations:
+          memory: 512M
+
+  redis:
+    image: redis:7-alpine
+    container_name: cangjie-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    command: redis-server --appendonly yes
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  postgres:
+    image: postgres:15-alpine
+    container_name: cangjie-postgres
+    environment:
+      - POSTGRES_USER=cangjie
+      - POSTGRES_PASSWORD=cangjie123
+      - POSTGRES_DB=cangjie_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./init-db.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U cangjie"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  redis-data:
+  postgres-data:
+  data:
+    driver: local
+    driver_opts:
+      type: none
+      device: ./data
+      o: bind
+
+networks:
+  default:
+    name: cangjie-network
+    driver: bridge
