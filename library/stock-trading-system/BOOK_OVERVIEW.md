@@ -75,12 +75,12 @@
 | 02 | stock-screening | 分析 | 邱国鹭+欧奈尔(OCR) | 增加大盘60日线+板块强度+行业格局+CANSLIM按行业分类 |
 | 03 | kline-signal | 分析 | 尼森(OCR) | 位置确认改用ATR倍数 |
 | 04 | trend-key-level | 分析 | 爱德华兹(OCR)+邱国鹭 | 增加趋势强度三级量化+价值锚 |
-| 05 | breakout-entry | 执行 | 海龟(OCR)+利弗莫尔+陈江挺 | 10/20日突破+涨停过滤+关键点+20日线趋势过滤 |
-| 06 | position-sizing | 执行 | 海龟+撒普 | **公式修正：股数=资金×1%/(2×ATR)** |
+| 05 | breakout-entry | 执行 | 海龟(OCR)+利弗莫尔+陈江挺 | 10/20日突破+涨停过滤+关键点+20日线趋势过滤+ADX<15硬过滤+ATR自适应(atr10/atr20) |
+| 06 | position-sizing | 执行 | 海龟+撒普 | **公式修正：股数=资金×1%/(2×ATR)**+ATR自适应头寸 |
 | 07 | atr-stop-loss | 执行 | 海龟(OCR) | **加仓止损修正+跌停处理** |
-| 08 | trend-exit | 执行 | 陈江挺 | 增加20日低点+浮盈回撤保护(5年回测优化) |
+| 08 | trend-exit | 执行 | 陈江挺 | 20日最低价+浮盈回撤保护+黑天鹅熔断冷静期恢复+入场≤3日跌破ma20快速止损 |
 | 09 | emotion-control | 心理 | 道格拉斯(OCR)+陈江挺+芒格 | 增加快速评估+认知偏差检测 |
 | 10 | system-optimization | 心理 | 撒普(OCR)+芒格 | R乘数+交易成本+多元思维 |
 | 11 | trade-review | 复盘 | 多书整合 | 五维度+利弗莫尔归因 |
 | 12 | mindset-calibration | 辅助 | 易经+周易 | 严格限界：仅心态校准 |
-| 13 | mean-reversion | 执行 | 撒普(OCR) | RSI超卖+布林带破下轨+量缩确认 |
+| 13 | mean-reversion | 执行 | 撒普(OCR) | RSI超卖+布林带破下轨+量缩确认+恐慌放量见底例外+bb_mid减仓50%+bb_upper清仓+跌停过滤+时间止损14日 |
