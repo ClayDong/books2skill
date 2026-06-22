@@ -102,6 +102,20 @@ class BacktestEngine:
                 if code not in stock_data or date not in stock_data[code].index:
                     continue
                 row = stock_data[code].loc[date]
+
+                # Skill 01: individual stock black-swan check (single-stock decline)
+                # ≥8% daily drop → reduce to half; ≥10% → liquidate + 3-day cool-off
+                pct_chg = row.get('pct_change', 0)
+                if not pd.isna(pct_chg):
+                    if pct_chg <= -10.0:
+                        self._exit(code, row['close'], date, 'black_swan_stock_10pct')
+                        self.black_swan_cooldown_until = self._add_trading_days(idx, 3, all_dates)
+                        continue
+                    elif pct_chg <= -8.0:
+                        self._reduce(code, row['close'], date, 'black_swan_stock_8pct', 0.5)
+                        if code not in self.positions:
+                            continue
+
                 pos = self.positions.get(code)
                 if pos and pos.get('strategy') == 'mean_reversion':
                     self._check_mean_reversion_exit(code, row, date)
@@ -120,12 +134,29 @@ class BacktestEngine:
                     if date not in df.index:
                         continue
                     row = df.loc[date]
-                    # Skill 05: breakout entry (trending market)
-                    if self._check_entry(row, code):
+
+                    # Market state gating (skill 05/13 mutual exclusion)
+                    adx_val = row.get('adx14', 50)
+                    if not pd.isna(adx_val):
+                        if adx_val < 15:
+                            # Extreme no-trend: skip all entries
+                            continue
+                        market_state = 'trending' if adx_val > 25 else 'neutral'
+                    else:
+                        market_state = 'neutral'  # Default when ADX unavailable
+
+                    # Skill 05: breakout entry (trending or neutral market)
+                    if market_state != 'trending' and market_state != 'neutral':
+                        pass  # ranging not handled by 05
+                    elif self._check_entry(row, code):
                         if self._check_position_limits(code):
                             self._enter_position(code, row, date, strategy='breakout')
-                    # Skill 13: mean reversion entry (ranging market, mutually exclusive with 05)
-                    elif self._check_mean_reversion_entry(row, code):
+                            continue
+
+                    # Skill 13: mean reversion entry (neutral market only, skip in trending)
+                    if market_state == 'trending':
+                        continue  # Trending market: skip mean reversion
+                    if self._check_mean_reversion_entry(row, code):
                         if self._check_position_limits(code):
                             self._enter_position(code, row, date, strategy='mean_reversion')
 
@@ -312,18 +343,19 @@ class BacktestEngine:
 
     def _enter_position(self, code: str, row: pd.Series, date, strategy: str = 'breakout'):
         """Enter a new position."""
-        # Skill 05 step 8: ATR adaptive logic
-        # High volatility (atr14 > atr20): use atr10 (faster, tighter stop)
-        # Low volatility (atr14 <= atr20): use atr20 (wider stop, more room to breathe)
+        # Skill 05 step 8: ATR adaptive logic (3-tier)
+        # Normal market: use atr14 (default, most stable)
+        # High volatility (atr14 > 1.5x atr20): use atr10 (faster, tighter stop)
+        # Low volatility (atr14 < 0.7x atr20): use atr20 (wider stop, filter noise)
         atr10 = row.get('atr10', row['atr14'])
         atr20 = row.get('atr20', row['atr14'])
         if not pd.isna(atr10) and not pd.isna(atr20) and not pd.isna(row['atr14']):
-            if row['atr14'] > atr20:
-                # High volatility: use atr10 (faster response, tighter stop)
-                atr_for_sizing = atr10
+            if row['atr14'] > atr20 * 1.5:
+                atr_for_sizing = atr10  # High volatility: faster response, tighter stop
+            elif row['atr14'] < atr20 * 0.7:
+                atr_for_sizing = atr20  # Low volatility: wider stop, filter noise
             else:
-                # Low volatility: use atr20 (wider stop, give position more room)
-                atr_for_sizing = atr20
+                atr_for_sizing = row['atr14']  # Normal: use default atr14
         else:
             atr_for_sizing = row['atr14']
 
